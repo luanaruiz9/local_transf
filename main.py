@@ -57,11 +57,11 @@ ratio = 0.1
 
 for model in modelList:
     
-    dataset = Planetoid(root='/tmp/pubmed', name='PubMed').data
+    dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
 
     #loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
-    test_accs, losses, best_model, best_acc, test_loader = train_test.train(data, model, loss, args) 
+    test_accs, losses, best_model, best_acc, test_loader = train_test.train(dataset, model, loss, args) 
 
     print("Maximum validation set accuracy: {0}".format(max(test_accs)))
     print("Minimum loss: {0}".format(min(losses)))
