@@ -9,7 +9,7 @@ import pandas as pd
 import copy
 
 from torch_geometric.datasets import TUDataset
-from torch_geometric.datasets import CitationFull
+from torch_geometric.datasets import Planetoid
 from torch_geometric.data import DataLoader
 
 import torch_geometric.nn as pyg_nn
@@ -32,7 +32,7 @@ class objectview(object):
 
 modelList = []
 
-dataset = CitationFull(root='/tmp/pubmed', name='PubMed')
+dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
 
 F = [dataset.num_node_features, 32, 32]
 MLP = [32, dataset.num_classes]
@@ -55,7 +55,7 @@ for args in [
 
 for model in modelList:
     
-    dataset = CitationFull(root='/tmp/pubmed', name='PubMed')
+    dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
 
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
