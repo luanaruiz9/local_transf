@@ -47,6 +47,7 @@ def train(dataset, model, loss_function, args):
     
     data = dataset.data
     print(data)
+    m=2000
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, m))
     print(sampledData)
 
