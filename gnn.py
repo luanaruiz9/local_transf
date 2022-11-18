@@ -5,7 +5,7 @@ from torch_geometric.nn import SAGEConv, GCNConv
 
 class GNN(torch.nn.Module):
 
-    def __init__(self, GNNtype, Flist, MLPlist, Klist = None):
+    def __init__(self, GNNtype, Flist, MLPlist, softmax=False, Klist = None):
 
         super(GNN, self).__init__()
         self.type = GNNtype
@@ -13,6 +13,7 @@ class GNN(torch.nn.Module):
         self.L = len(Flist)
         self.MLPlist = MLPlist 
         self.Lmlp = len(MLPlist)
+        self.softmax = softmax
 
         self.layers = nn.ModuleList()
         self.MLPlayers = nn.ModuleList()
@@ -36,5 +37,8 @@ class GNN(torch.nn.Module):
 
         for i, layer in enumerate(self.MLPlayers):
             y = layer(y)
-            
+        
+        if self.softmax == True:
+            y = F.log_softmax(x, dim=1)
+
         return y
