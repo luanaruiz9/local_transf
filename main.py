@@ -63,11 +63,11 @@ for model in modelList:
     print("Minimum loss: {0}".format(min(losses)))
 
     # Run test for our best model to save the predictions!
-    train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True, model_type=model)
+    train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True)
     print()
 
     plt.title(dataset.name)
-    plt.plot(losses, label="training loss" + " - " + args.model_type)
-    plt.plot(test_accs, label="test accuracy" + " - " + args.model_type)
+    plt.plot(losses, label="training loss" + " - " + model.type)
+    plt.plot(test_accs, label="test accuracy" + " - " + model.type)
 plt.legend()
 plt.show()
