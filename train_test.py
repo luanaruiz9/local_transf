@@ -20,7 +20,7 @@ import torch.optim as optim
 
 
 def build_optimizer(args, params):
-    
+
     weight_decay = args.weight_decay
     filter_fn = filter(lambda p : p.requires_grad, params)
     if args.opt == 'adam':
@@ -117,7 +117,3 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, model_
         total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
 
     return correct / total
-  
-#class objectview(object):
-#    def __init__(self, d):
-#        self.__dict__ = d

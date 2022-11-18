@@ -26,10 +26,12 @@ class GNN(torch.nn.Module):
         for i in range(self.Lmlp-1):
             self.MLPlayers.append(nn.Linear(MLPlist[i],MLPlist[i+1]))
             
-    def forward(self, y, edge_index, edge_weight):
+    def forward(self, data):
+
+        y, edge_index, batch = data.x, data.edge_index, data.batch
 
         for i, layer in enumerate(self.layers):
-            y = layer(y, edge_index=edge_index, edge_weight=edge_weight)
+            y = layer(y, edge_index=edge_index)
             y = F.relu(y)
 
         for i, layer in enumerate(self.MLPlayers):
