@@ -45,7 +45,7 @@ modelList.append(GCN)
 
 # Loss
 
-loss = torch.nn.NLLLoss
+loss = torch.nn.NLLLoss()
 for args in [
         {'batch_size': 32, 'hidden_dim': 32, 'dropout': 0.5, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
     ]:
