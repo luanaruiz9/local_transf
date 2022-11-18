@@ -58,7 +58,7 @@ ratio = 0.1
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
-    N = dataset.num_nodes
+    N = dataset.data.num_nodes
     n = np.floor(ratio*N)
     dataset = dataset.subgraph(torch.randint(0, N, n))
 
