@@ -58,6 +58,7 @@ ratio = 0.1
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
+    print(dataset)
 
     #loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
