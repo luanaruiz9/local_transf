@@ -34,7 +34,7 @@ modelList = []
 
 dataset = Planetoid(root='/tmp/cora', name='Cora')
 
-F = [dataset.num_node_features, 32]
+F = [dataset.num_node_features, 32, 32]
 MLP = [32, dataset.num_classes]
 
 SAGE = gnn.GNN('sage', F, MLP)
@@ -47,7 +47,7 @@ modelList.append(GCN)
 
 loss = torch.nn.NLLLoss()
 for args in [
-        {'batch_size': 32, 'hidden_dim': 32, 'dropout': 0.5, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 32, 'dropout': 0.5, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
     ]:
         args = objectview(args)
 
