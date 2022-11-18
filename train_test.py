@@ -40,11 +40,11 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(dataset, model, loss_function, args):
-    
+def train(loader, model, loss_function, args):
+
     print("Node task. test set size:", np.sum(dataset[0]['test_mask'].numpy()))
     print()
-    test_loader = loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
+    test_loader = loader
 
     # build model
     #model = GNNStack(dataset.num_node_features, args.hidden_dim, dataset.num_classes, 

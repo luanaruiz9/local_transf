@@ -56,8 +56,10 @@ for args in [
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/cora', name='Cora')
+
+    loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
-    test_accs, losses, best_model, best_acc, test_loader = train_test.train(dataset, model, loss, args) 
+    test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
     print("Maximum test set accuracy: {0}".format(max(test_accs)))
     print("Minimum loss: {0}".format(min(losses)))
