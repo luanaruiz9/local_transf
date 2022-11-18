@@ -39,6 +39,6 @@ class GNN(torch.nn.Module):
             y = layer(y)
         
         if self.softmax == True:
-            y = F.log_softmax(x, dim=1)
+            y = F.log_softmax(y, dim=1)
 
         return y
