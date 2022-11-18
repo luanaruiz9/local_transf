@@ -53,19 +53,33 @@ for args in [
 
 # Training and testing
 
+ratio = 0.1
+
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
+    N = dataset.num_nodes
+    n = np.floor(ratio*N)
+    dataset = dataset.subgraph(torch.randint(0, N, n))
 
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
-    print("Maximum test set accuracy: {0}".format(max(test_accs)))
+    print("Maximum validation set accuracy: {0}".format(max(test_accs)))
     print("Minimum loss: {0}".format(min(losses)))
 
     # Run test for our best model to save the predictions!
-    train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True)
+    print(train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True))
+
+    # Trasferability
+
+    dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed')
+    another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
+
+    # Run test for our best model to save the predictions!
+    print(train_test.test(another_test_loader, best_model, is_validation=False, save_model_preds=True))
+
     print()
 
     plt.title(dataset.name)

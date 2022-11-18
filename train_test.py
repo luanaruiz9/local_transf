@@ -73,7 +73,7 @@ def train(loader, model, loss_function, args):
         losses.append(total_loss)
 
         if epoch % 10 == 0:
-          test_acc = test(test_loader, model)
+          test_acc = test(test_loader, model, is_validation=True)
           test_accs.append(test_acc)
           if test_acc > best_acc:
             best_acc = test_acc
@@ -108,7 +108,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('CORA-Node-' + test_model.type + '.csv', sep=',', index=False)
+          df.to_csv('PubMed-Node-' + test_model.type + data.num_nodes + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
