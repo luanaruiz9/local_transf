@@ -9,7 +9,7 @@ import pandas as pd
 import copy
 
 from torch_geometric.datasets import TUDataset
-from torch_geometric.datasets import Planetoid
+from torch_geometric.datasets import CitationFull
 from torch_geometric.data import DataLoader
 
 import torch_geometric.nn as pyg_nn
