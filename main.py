@@ -19,7 +19,8 @@ import matplotlib.pyplot as plt
 import gnn
 import train_test
 
-%%
+""
+""
 
 modelList = []
 
