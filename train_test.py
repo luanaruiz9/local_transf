@@ -83,7 +83,7 @@ def train(dataset, model, loss_function, args):
     
     return test_accs, losses, best_model, best_acc, test_loader
 
-def test(loader, test_model, is_validation=False, save_model_preds=False, model_type=None):
+def test(loader, test_model, is_validation=False, save_model_preds=False):
     test_model.eval()
 
     correct = 0
@@ -100,7 +100,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, model_
         label = label[mask]
 
         if save_model_preds:
-          print ("Saving Model Predictions for Model Type", model_type)
+          print ("Saving Model Predictions for Model Type", model.type)
 
           data = {}
           data['pred'] = pred.view(-1).cpu().detach().numpy()
@@ -108,7 +108,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, model_
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('CORA-Node-' + model_type + '.csv', sep=',', index=False)
+          df.to_csv('CORA-Node-' + model.type + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
