@@ -42,7 +42,7 @@ def build_optimizer(args, params):
 
 def train(loader, model, loss_function, args):
 
-    print("Node task. test set size:", np.sum(dataset[0]['test_mask'].numpy()))
+    print("Node task. test set size:", np.sum(loader.dataset[0]['test_mask'].numpy()))
     print()
     test_loader = loader
 
