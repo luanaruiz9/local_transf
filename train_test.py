@@ -100,7 +100,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
         label = label[mask]
 
         if save_model_preds:
-          print ("Saving Model Predictions for Model Type", model.type)
+          print ("Saving Model Predictions for Model Type", test_model.type)
 
           data = {}
           data['pred'] = pred.view(-1).cpu().detach().numpy()
@@ -108,7 +108,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('CORA-Node-' + model.type + '.csv', sep=',', index=False)
+          df.to_csv('CORA-Node-' + test_model.type + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
