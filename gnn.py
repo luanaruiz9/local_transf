@@ -50,7 +50,7 @@ class GraphFilter(torch.nn.Module):
         self.Fin = Fin 
         self.Fout = Fout
         self.K = K
-        self.weight = nn.ParameterList([nn.Parameter(torch.randn(self.f_in,self.f_out)) for k in range(self.k)])
+        self.weight = nn.ParameterList([nn.Parameter(torch.randn(self.Fin,self.Fout)) for k in range(self.K)])
         self.reset_parameters()
 
 
