@@ -84,7 +84,7 @@ for model in modelList:
 
     print()
 
-    plt.title(dataset.name)
+    plt.title('Pubmed')
     plt.plot(losses, label="training loss" + " - " + model.type)
     plt.plot(test_accs, label="test accuracy" + " - " + model.type)
 plt.legend()
