@@ -40,20 +40,12 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(dataset, model, loss_function, args):
+def train(loader, model, loss_function, args):
 
-    print("Node task. test set size:", np.sum(dataset[0]['test_mask'].numpy()))
+    print("Node task. test set size:", np.sum(loader.data[0]['test_mask'].numpy()))
     print()
-    
-    data = dataset.data
-    print(data)
-    m=2000
-    sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
-    print(sampledData)
 
-    # Data(x=[19717, 500], edge_index=[2, 88648], y=[19717], train_mask=[19717], val_mask=[19717], test_mask=[19717])
-
-    #test_loader = loader
+    test_loader = loader
 
     # build model
     #model = GNNStack(dataset.num_node_features, args.hidden_dim, dataset.num_classes, 

@@ -58,11 +58,13 @@ ratio = 0.1
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
-    print(dataset)
-
-    #loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
+    data = dataset.data
+    m = 2000
+    sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+    dataset=[sampledData]
+    loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
-    test_accs, losses, best_model, best_acc, test_loader = train_test.train(dataset, model, loss, args) 
+    test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
     print("Maximum validation set accuracy: {0}".format(max(test_accs)))
     print("Minimum loss: {0}".format(min(losses)))
