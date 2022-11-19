@@ -62,7 +62,10 @@ class GraphFilter(torch.nn.Module):
 
 
     def forward(self, x, edge_index):
-        G = from_edgelist(edge_index.tolist())
+        edge_index = torch.transpose(edge_index,1,0).tolist()
+        edge_list = [tuple(t) for t in edge_index]
+
+        G = from_edgelist(edge_list)
         S = adjacency_matrix(G)
 
         values = S.data
