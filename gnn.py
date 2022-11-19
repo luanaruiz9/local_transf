@@ -63,7 +63,7 @@ class GraphFilter(torch.nn.Module):
 
     def forward(self, x, edge_index):
         N = x.shape[0]
-        E = edge.index.shape[1]
+        E = edge_index.shape[1]
 
         S = torch.sparse_coo_tensor(edge_index, torch.ones(E), (N,N))
 
