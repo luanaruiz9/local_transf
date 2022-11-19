@@ -36,12 +36,16 @@ dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
 
 F = [dataset.num_node_features, 64, 32]
 MLP = [32, dataset.num_classes]
+K = [5, 5]
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList.append(SAGE)
 
 GCN = gnn.GNN('gcn', F, MLP, True)
 modelList.append(GCN)
+
+GNN = gnn.GNN('gnn', F, MLP, True, K)
+modelList.append(GNN)
 
 # Loss
 
@@ -56,8 +60,7 @@ for args in [
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
-    data = dataset.data
-    print(data)
+    data = dataset.data # Save it to have the same test samples in the transferability test
     save_test_mask = data.test_mask
     m = 2000
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
