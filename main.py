@@ -34,7 +34,7 @@ modelList = []
 
 dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
 
-F = [dataset.num_node_features, 32, 32]
+F = [dataset.num_node_features, 64, 32]
 MLP = [32, dataset.num_classes]
 
 SAGE = gnn.GNN('sage', F, MLP, True)
