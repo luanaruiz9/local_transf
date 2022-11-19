@@ -53,12 +53,12 @@ for args in [
 
 # Training and testing
 
-ratio = 0.1
-
 for model in modelList:
     
     dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
     data = dataset.data
+    print(data)
+    save_test_mask = data.test_mask
     m = 2000
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     dataset = [sampledData]
@@ -76,6 +76,7 @@ for model in modelList:
 
     dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
     data = dataset_transf.data
+    data.test_mask = save_test_mask
     dataset_transf = [data]
     another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
 
