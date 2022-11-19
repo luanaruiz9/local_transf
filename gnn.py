@@ -55,7 +55,7 @@ class GraphFilter(torch.nn.Module):
 
 
     def reset_parameters(self):
-        stdv = 1. / math.sqrt(self.f_in * self.k)
+        stdv = 1. / math.sqrt(self.Fin * self.K)
         for elem in self.weight:
           elem.data.uniform_(-stdv, stdv)
 
@@ -73,7 +73,7 @@ class GraphFilter(torch.nn.Module):
 
         S = torch.sparse.FloatTensor(i, v, torch.Size(shape))
 
-        return LSIGF(self.weights,S,x)
+        return LSIGF(self.weight,S,x)
 
 
 class GNN(torch.nn.Module):
