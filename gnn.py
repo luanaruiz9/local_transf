@@ -68,6 +68,7 @@ class GraphFilter(torch.nn.Module):
         G = from_edgelist(edge_list)
         S = adjacency_matrix(G)
 
+        print(S)
         values = S.data
         indices = np.vstack((S.row, S.col))
 
