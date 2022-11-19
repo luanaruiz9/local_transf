@@ -62,21 +62,10 @@ class GraphFilter(torch.nn.Module):
 
 
     def forward(self, x, edge_index):
-        edge_index = torch.transpose(edge_index,1,0).tolist()
-        edge_list = [tuple(t) for t in edge_index]
+        N = x.shape[0]
+        E = edge.index.shape[1]
 
-        G = from_edgelist(edge_list)
-        S = adjacency_matrix(G)
-
-        print(S.indices)
-        values = S.data
-        indices = np.vstack((S.i, S.j))
-
-        i = torch.LongTensor(indices)
-        v = torch.FloatTensor(values)
-        shape = S.shape
-
-        S = torch.sparse.FloatTensor(i, v, torch.Size(shape))
+        S = torch.sparse_coo_tensor(edge_index, torch.ones(E), (N,N))
 
         return LSIGF(self.weight,S,x)
 
