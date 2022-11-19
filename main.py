@@ -57,7 +57,7 @@ ratio = 0.1
 
 for model in modelList:
     
-    dataset = Planetoid(root='/tmp/pubmed', name='PubMed')
+    dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
     data = dataset.data
     m = 2000
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
@@ -74,7 +74,7 @@ for model in modelList:
 
     # Trasferability
 
-    dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed')
+    dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
     data = dataset_transf.data
     dataset_transf = [data]
     another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
@@ -87,5 +87,6 @@ for model in modelList:
     plt.title('Pubmed')
     plt.plot(losses, label="training loss" + " - " + model.type)
     plt.plot(test_accs, label="test accuracy" + " - " + model.type)
+
 plt.legend()
 plt.show()

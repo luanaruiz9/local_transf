@@ -47,9 +47,6 @@ def train(loader, model, loss_function, args):
 
     test_loader = loader
 
-    # build model
-    #model = GNNStack(dataset.num_node_features, args.hidden_dim, dataset.num_classes, 
-    #                        args)
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train
