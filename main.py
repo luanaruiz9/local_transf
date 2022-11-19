@@ -61,7 +61,7 @@ for model in modelList:
     data = dataset.data
     m = 2000
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
-    dataset=[sampledData]
+    dataset = [sampledData]
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
@@ -75,6 +75,8 @@ for model in modelList:
     # Trasferability
 
     dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed')
+    data = dataset_transf.data
+    dataset_transf = [data]
     another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
 
     # Run test for our best model to save the predictions!
