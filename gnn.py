@@ -69,7 +69,7 @@ class GraphFilter(torch.nn.Module):
         if edge_weight is None:
             edge_weight = torch.ones(E)
         S = torch.sparse_coo_tensor(edge_index, edge_weight, (N,N))
-        
+
         if self.normalize:
             edge_weight_np = edge_weight.numpy(force=True)
             edge_index_np = edge_index.numpy(force=True)

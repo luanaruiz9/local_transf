@@ -71,7 +71,7 @@ for args in [
 
 for model in modelList:
     
-    loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
+    loader = NeighborLoader(dataset, num_neighbors=[5] * 2, batch_size=args.batch_size, shuffle=False)
     
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
