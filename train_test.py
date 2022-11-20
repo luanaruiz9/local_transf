@@ -44,7 +44,7 @@ def train(loader, model, loss_function, args):
     if len(loader.dataset) == 1:
         to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
     else:
-        to_print = np.sum(loader.dataset['test_mask'].numpy())
+        to_print = None #np.sum(loader.dataset['test_mask'].numpy())
     print("Node task. test set size:", to_print)
     print()
 
