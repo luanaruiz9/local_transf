@@ -64,7 +64,8 @@ class GraphFilter(torch.nn.Module):
     def forward(self, x, edge_index, edge_weight):
         N = x.shape[0]
         E = edge_index.shape[1]
-
+        if edge_weight is None:
+            edge_weight = torch.ones(E)
         S = torch.sparse_coo_tensor(edge_index, edge_weight, (N,N))
 
         return LSIGF(self.weight,S,x)
