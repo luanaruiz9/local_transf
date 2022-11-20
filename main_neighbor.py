@@ -34,7 +34,9 @@ class objectview(object):
 dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
 F0 = dataset.num_node_features
 C = dataset.num_classes
-data = dataset.data # Save it to have the same test samples in the transferability test
+data = dataset.data 
+save_train_mask = data.train_mask
+# Save it to have the same test samples in the transferability test
 save_test_mask = data.test_mask
 m = 2000
 sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
@@ -74,7 +76,7 @@ for args in [
 
 for model in modelList:
     
-    loader = NeighborLoader(dataset, num_neighbors=[5] * 2, batch_size=args.batch_size, shuffle=False)
+    loader = NeighborLoader(dataset, num_neighbors=[5] * 2, batch_size=args.batch_size, input_nodes=save_train_mask, shuffle=False)
     
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
