@@ -41,8 +41,11 @@ def build_optimizer(args, params):
 
 
 def train(loader, model, loss_function, args):
-
-    print("Node task. test set size:", np.sum(loader.dataset[0]['test_mask'].numpy()))
+    if len(dataset) == 1:
+        to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
+    else:
+        to_print = np.sum(loader.dataset['test_mask'].numpy())
+    print("Node task. test set size:", to_print)
     print()
 
     test_loader = loader
@@ -106,7 +109,11 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('PubMed-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
+          if len(dataset) == 1:
+            to_print = str(loader.dataset[0].num_nodes)
+          else:
+            to_print = str(loader.dataset.num_nodes)
+          df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
