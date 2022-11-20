@@ -31,6 +31,8 @@ class objectview(object):
 # Data
 
 dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
+F0 = dataset.num_node_features
+C = dataset.num_classes
 data = dataset.data # Save it to have the same test samples in the transferability test
 save_test_mask = data.test_mask
 m = 2000
@@ -46,8 +48,8 @@ dataset_transf = [data]
 
 modelList = []
 
-F = [dataset.num_node_features, 64, 32]
-MLP = [32, dataset.num_classes]
+F = [F0, 64, 32]
+MLP = [32, C]
 K = [5, 5]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
