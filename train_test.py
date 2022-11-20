@@ -43,12 +43,15 @@ def build_optimizer(args, params):
 def train(loader, model, loss_function, args):
     if len(loader.dataset) == 1:
         to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
+        test_loader = loader
     else:
         to_print = None #np.sum(loader.dataset['test_mask'].numpy())
+        test_loader = DataLoader(loader.dataset, batch_size=args.batch_size, shuffle=False)
+
     print("Node task. test set size:", to_print)
     print()
 
-    test_loader = loader
+    #test_loader = loader
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -69,7 +72,10 @@ def train(loader, model, loss_function, args):
             loss = loss_function(pred, label)
             loss.backward()
             opt.step()
-            total_loss += loss.item() * batch.num_graphs
+            if len(loader.dataset) == 1:
+                total_loss += loss.item() * batch.num_graphs
+            else:
+                total_loss += loss.item()
         total_loss /= len(loader.dataset)
         losses.append(total_loss)
 
