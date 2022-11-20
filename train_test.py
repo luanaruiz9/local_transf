@@ -8,8 +8,6 @@ from tqdm import trange
 import pandas as pd
 import copy
 
-import tqdm as tqdm
-
 from torch_geometric.datasets import TUDataset
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import DataLoader
@@ -43,17 +41,12 @@ def build_optimizer(args, params):
 
 
 def train(loader, model, loss_function, args):
-    if len(loader.dataset) == 1:
-        to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
-        test_loader = loader
-    else:
-        to_print = None #np.sum(loader.dataset['test_mask'].numpy())
-        test_loader = DataLoader(loader.dataset, batch_size=args.batch_size, shuffle=False)
+    to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
 
     print("Node task. test set size:", to_print)
     print()
 
-    #test_loader = loader
+    test_loader = loader
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -65,8 +58,7 @@ def train(loader, model, loss_function, args):
     for epoch in trange(args.epochs, desc="Training", unit="Epochs"):
         total_loss = 0
         model.train()
-        #for batch in loader:
-        for batch in tqdm(loader):
+        for batch in loader:
             opt.zero_grad()
             pred = model(batch)
             label = batch.y
@@ -118,10 +110,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          if len(loader.dataset) == 1:
-            to_print = str(loader.dataset[0].num_nodes)
-          else:
-            to_print = str(loader.dataset.num_nodes)
+          to_print = str(loader.dataset[0].num_nodes)
           df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()

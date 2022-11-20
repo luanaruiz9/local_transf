@@ -109,8 +109,7 @@ class GNN(torch.nn.Module):
             
     def forward(self, data):
 
-        #y, edge_index, edge_weight, batch = data.x, data.edge_index data.edge_weight, data.batch
-        y, edge_index, edge_weight = data.x_dict, data.edge_index_dict, data.edge_weight_dict
+        y, edge_index, edge_weight, batch = data.x, data.edge_index, data.edge_weight, data.batch
 
         for i, layer in enumerate(self.layers):
             if self.type == 'gnn':
