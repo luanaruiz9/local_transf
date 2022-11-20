@@ -38,14 +38,14 @@ F = [dataset.num_node_features, 64, 32]
 MLP = [32, dataset.num_classes]
 K = [5, 5]
 
+GNN = gnn.GNN('gnn', F, MLP, True, K)
+modelList.append(GNN)
+
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList.append(SAGE)
 
 GCN = gnn.GNN('gcn', F, MLP, True)
 modelList.append(GCN)
-
-GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList.append(GNN)
 
 # Loss
 

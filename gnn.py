@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv, GCNConv
 import networkx
 from networkx import from_edgelist, adjacency_matrix
+import scipy
 
 
 def LSIGF(weights, S, x):
@@ -45,12 +46,13 @@ def LSIGF(weights, S, x):
 
 class GraphFilter(torch.nn.Module):
 
-    def __init__(self, Fin, Fout, K):
+    def __init__(self, Fin, Fout, K, normalize=True):
 
         super(GraphFilter, self).__init__()
         self.Fin = Fin 
         self.Fout = Fout
         self.K = K
+        self.normalize = normalize
         self.weight = nn.ParameterList([nn.Parameter(torch.randn(self.Fin,self.Fout)) for k in range(self.K)])
         self.reset_parameters()
 
@@ -67,6 +69,13 @@ class GraphFilter(torch.nn.Module):
         if edge_weight is None:
             edge_weight = torch.ones(E)
         S = torch.sparse_coo_tensor(edge_index, edge_weight, (N,N))
+        if self.normalize:
+            edge_weight_np = edge_weight.numpy(force=True)
+            edge_index_np = edge_index.numpy(force=True)
+            aux = scipy.sparse.coo_matrix((edge_weight_np, (edge_index_np[0],edge_index_np[1])), shape=(N,N))
+            u, s, vh = scipy.sparse.linalg.svds(aux, k=1)
+        S = S/s[0]
+        S = S.to(self.device)
 
         return LSIGF(self.weight,S,x)
 
