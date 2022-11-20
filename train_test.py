@@ -8,6 +8,8 @@ from tqdm import trange
 import pandas as pd
 import copy
 
+import tqdm as tqdm
+
 from torch_geometric.datasets import TUDataset
 from torch_geometric.datasets import Planetoid
 from torch_geometric.data import DataLoader
@@ -63,7 +65,8 @@ def train(loader, model, loss_function, args):
     for epoch in trange(args.epochs, desc="Training", unit="Epochs"):
         total_loss = 0
         model.train()
-        for batch in loader:
+        #for batch in loader:
+        for batch in tqdm(loader):
             opt.zero_grad()
             pred = model(batch)
             label = batch.y
