@@ -61,11 +61,11 @@ class GraphFilter(torch.nn.Module):
           elem.data.uniform_(-stdv, stdv)
 
 
-    def forward(self, x, edge_index):
+    def forward(self, x, edge_index, edge_weight):
         N = x.shape[0]
         E = edge_index.shape[1]
 
-        S = torch.sparse_coo_tensor(edge_index, torch.ones(E), (N,N))
+        S = torch.sparse_coo_tensor(edge_index, edge_weight, (N,N))
 
         return LSIGF(self.weight,S,x)
 
@@ -99,10 +99,13 @@ class GNN(torch.nn.Module):
             
     def forward(self, data):
 
-        y, edge_index, batch = data.x, data.edge_index, data.batch
+        y, edge_index, edge_weight, batch = data.x, data.edge_index, data.edge_weight, data.batch
 
         for i, layer in enumerate(self.layers):
-            y = layer(y, edge_index=edge_index)
+            if self.type == 'gnn':
+                y = layer(y, edge_index=edge_index, edge_weight=edge_weight)
+            else:
+                y = layer(y, edge_index=edge_index)
             y = F.relu(y)
 
         for i, layer in enumerate(self.MLPlayers):
