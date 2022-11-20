@@ -41,7 +41,7 @@ def build_optimizer(args, params):
 
 
 def train(loader, model, loss_function, args):
-    if len(dataset) == 1:
+    if len(loader.dataset) == 1:
         to_print = np.sum(loader.dataset[0]['test_mask'].numpy())
     else:
         to_print = np.sum(loader.dataset['test_mask'].numpy())
@@ -109,7 +109,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          if len(dataset) == 1:
+          if len(loader.dataset) == 1:
             to_print = str(loader.dataset[0].num_nodes)
           else:
             to_print = str(loader.dataset.num_nodes)
