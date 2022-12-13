@@ -90,7 +90,7 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
     correct = 0
     # Note that Cora is only one graph!
     for data in loader:
-        print(data)
+        #print(data)
         with torch.no_grad():
             # max(dim=1) returns values, indices tuple; only need indices
             pred = test_model(data).max(dim=1)[1]
@@ -98,8 +98,8 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
 
         #mask = data.val_mask if is_validation else data.test_mask
         # node classification: only evaluate on nodes in test set
-        #pred = pred[mask]
-        #label = label[mask]
+        pred = pred[mask]
+        label = label[mask]
 
         #if save_model_preds:
           #print ("Saving Model Predictions for Model Type", test_model.type)
@@ -116,6 +116,6 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
         correct += pred.eq(label).sum().item()
 
     total = torch.sum(mask).item()
-    print(total)
+    #print(total)
 
     return correct / total
