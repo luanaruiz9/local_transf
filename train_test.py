@@ -40,14 +40,14 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(loader, model, loss_function, args):
+def train(loader, model, loss_function, args, val_mask):
     #to_print = np.sum(loader.dataset['test_mask'].numpy())
 
     #print("Node task. test set size:", to_print)
     print()
 
     test_loader = loader
-    #test_loader.input_nodes = loader.dataset['test_mask']
+    test_loader.input_nodes = val_mask
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train
@@ -75,7 +75,7 @@ def train(loader, model, loss_function, args):
         losses.append(total_loss)
 
         if epoch % 10 == 0:
-          test_acc = test(test_loader, model, is_validation=True)
+          test_acc = test(test_loader, model, val_mask, is_validation=True)
           test_accs.append(test_acc)
           if test_acc > best_acc:
             best_acc = test_acc
@@ -85,7 +85,7 @@ def train(loader, model, loss_function, args):
     
     return test_accs, losses, best_model, best_acc, test_loader
 
-def test(loader, test_model, is_validation=False, save_model_preds=False):
+def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
     test_model.eval()
 
     correct = 0
@@ -96,7 +96,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
             pred = test_model(data).max(dim=1)[1]
             label = data.y
 
-        mask = data.val_mask if is_validation else data.test_mask
+        #mask = data.val_mask if is_validation else data.test_mask
         # node classification: only evaluate on nodes in test set
         pred = pred[mask]
         label = label[mask]
