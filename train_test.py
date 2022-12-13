@@ -114,8 +114,6 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
             
         correct += pred.eq(label).sum().item()
 
-    total = 0
-    for data in loader.dataset:
-        total += torch.sum(mask).item()
+    total = torch.sum(mask).item()
 
     return correct / total
