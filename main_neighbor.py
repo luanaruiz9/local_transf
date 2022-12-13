@@ -81,7 +81,9 @@ for model in modelList:
     
     loader = NeighborLoader(dataset[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
     
-    test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args, val_mask) 
+    val_loader = NeighborLoader(dataset[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['val_mask'], shuffle=False)
+
+    test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, val_loader, model, loss, args, val_mask) 
 
     print("Maximum validation set accuracy: {0}".format(max(test_accs)))
     print("Minimum loss: {0}".format(min(losses)))
