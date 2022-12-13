@@ -47,7 +47,7 @@ def train(loader, model, loss_function, args, val_mask):
     #print("Node task. test set size:", to_print)
     print()
 
-    test_loader = NeighborLoader(loader.dataset, num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = loader.dataset['val_mask'], shuffle=False)
+    test_loader = NeighborLoader(loader.dataset, num_neighbors=loader.num_neighbors, batch_size=args.batch_size, input_nodes = loader.dataset['val_mask'], shuffle=False)
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train
