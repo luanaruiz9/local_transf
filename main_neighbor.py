@@ -35,7 +35,7 @@ F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data # Save it to have the same test samples in the transferability test
 save_test_mask = data.test_mask
-m = 10000
+m = 1000
 sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 dataset = [sampledData]
 
@@ -79,9 +79,9 @@ another_test_mask = dataset_transf[0]['test_mask']
 
 for model in modelList:
     
-    loader = NeighborLoader(dataset[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
+    loader = NeighborLoader(dataset[0], num_neighbors=[20]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
     
-    val_loader = NeighborLoader(dataset[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['val_mask'], shuffle=False)
+    val_loader = NeighborLoader(dataset[0], num_neighbors=[20]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['val_mask'], shuffle=False)
 
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, val_loader, model, loss, args, val_mask) 
 

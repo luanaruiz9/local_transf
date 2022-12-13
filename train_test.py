@@ -109,8 +109,8 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          to_print = str(loader.dataset[0].num_nodes)
-          df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
+          #to_print = str(loader.dataset[0].num_nodes)
+          #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
