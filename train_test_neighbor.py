@@ -41,7 +41,7 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(loader, test_loader, model, loss_function, args, val_mask):
+def train(loader, test_loader, model, loss_function, args):
     #to_print = np.sum(loader.dataset['test_mask'].numpy())
 
     #print("Node task. test set size:", to_print)
@@ -74,7 +74,7 @@ def train(loader, test_loader, model, loss_function, args, val_mask):
         losses.append(total_loss)
 
         if epoch % 10 == 0:
-          test_acc = test(test_loader, model, val_mask, is_validation=True)
+          test_acc = test(test_loader, model, is_validation=True)
           test_accs.append(test_acc)
           if test_acc > best_acc:
             best_acc = test_acc
@@ -84,7 +84,7 @@ def train(loader, test_loader, model, loss_function, args, val_mask):
     
     return test_accs, losses, best_model, best_acc, test_loader
 
-def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
+def test(loader, test_model, is_validation=False, save_model_preds=False):
     test_model.eval()
 
     correct = 0
@@ -115,7 +115,8 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
             
         correct += pred.eq(label).sum().item()
 
-    total = torch.sum(mask).item()
-    #print(total)
+    total = 0
+    for data in loader.dataset:
+        total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
 
     return correct / total
