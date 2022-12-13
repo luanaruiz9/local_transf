@@ -116,6 +116,6 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
 
     total = 0
     for data in loader.dataset:
-        total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
+        total += torch.sum(mask).item()
 
     return correct / total
