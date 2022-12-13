@@ -90,6 +90,7 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
     correct = 0
     # Note that Cora is only one graph!
     for data in loader:
+        print(data)
         with torch.no_grad():
             # max(dim=1) returns values, indices tuple; only need indices
             pred = test_model(data).max(dim=1)[1]
@@ -115,5 +116,6 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
         correct += pred.eq(label).sum().item()
 
     total = torch.sum(mask).item()
+    print(total)
 
     return correct / total
