@@ -10,7 +10,8 @@ import copy
 
 from torch_geometric.datasets import TUDataset
 from torch_geometric.datasets import Planetoid
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
+from torch_geometric.loader import NeighborLoader
 
 import torch_geometric.nn as pyg_nn
 
@@ -40,12 +41,11 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(loader, model, loss_function, args):
+def train(loader, test_loader, model, loss_function, args, val_mask):
+    #to_print = np.sum(loader.dataset['test_mask'].numpy())
 
-    print("Node task. test set size:", np.sum(loader.dataset[0]['test_mask'].numpy()))
+    #print("Node task. test set size:", to_print)
     print()
-
-    test_loader = loader
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -66,12 +66,15 @@ def train(loader, model, loss_function, args):
             loss = loss_function(pred, label)
             loss.backward()
             opt.step()
-            total_loss += loss.item() * batch.num_graphs
+            if len(loader.dataset) == 1:
+                total_loss += loss.item() * batch.num_graphs
+            else:
+                total_loss += loss.item()
         total_loss /= len(loader.dataset)
         losses.append(total_loss)
 
         if epoch % 10 == 0:
-          test_acc = test(test_loader, model, is_validation=True)
+          test_acc = test(test_loader, model, val_mask, is_validation=True)
           test_accs.append(test_acc)
           if test_acc > best_acc:
             best_acc = test_acc
@@ -81,7 +84,7 @@ def train(loader, model, loss_function, args):
     
     return test_accs, losses, best_model, best_acc, test_loader
 
-def test(loader, test_model, is_validation=False, save_model_preds=False):
+def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
     test_model.eval()
 
     correct = 0
@@ -92,26 +95,25 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
             pred = test_model(data).max(dim=1)[1]
             label = data.y
 
-        mask = data.val_mask if is_validation else data.test_mask
+        #mask = data.val_mask if is_validation else data.test_mask
         # node classification: only evaluate on nodes in test set
-        pred = pred[mask]
-        label = label[mask]
+        #pred = pred[mask]
+        #label = label[mask]
 
-        if save_model_preds:
-          print ("Saving Model Predictions for Model Type", test_model.type)
+        #if save_model_preds:
+          #print ("Saving Model Predictions for Model Type", test_model.type)
 
-          data = {}
-          data['pred'] = pred.view(-1).cpu().detach().numpy()
-          data['label'] = label.view(-1).cpu().detach().numpy()
+          #data = {}
+          #data['pred'] = pred.view(-1).cpu().detach().numpy()
+          #data['label'] = label.view(-1).cpu().detach().numpy()
 
-          df = pd.DataFrame(data=data)
+          #df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('PubMed-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
+          #to_print = str(loader.dataset[0].num_nodes)
+          #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
-    total = 0
-    for data in loader.dataset:
-        total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
+    total = torch.sum(mask).item()
 
     return correct / total

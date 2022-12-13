@@ -17,7 +17,7 @@ import torch_geometric.nn as pyg_nn
 import matplotlib.pyplot as plt
 
 import gnn
-import train_test
+import train_test_neighbor as train_test
 
 ""
 ""
@@ -35,7 +35,7 @@ F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data # Save it to have the same test samples in the transferability test
 save_test_mask = data.test_mask
-m = 1000
+m = 2000
 sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 dataset = [sampledData]
 
@@ -52,8 +52,8 @@ F = [F0, 64, 32]
 MLP = [32, C]
 K = [5, 5]
 
-GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList.append(GNN)
+#GNN = gnn.GNN('gnn', F, MLP, True, K)
+#modelList.append(GNN)
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList.append(SAGE)
@@ -65,7 +65,7 @@ modelList.append(GCN)
 
 loss = torch.nn.NLLLoss()
 for args in [
-        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 128, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
     ]:
         args = objectview(args)
 
@@ -81,9 +81,9 @@ another_test_mask = dataset_transf[0]['test_mask']
 
 for model in modelList:
     
-    loader = NeighborLoader(dataset[0], num_neighbors=[20]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
+    loader = NeighborLoader(dataset[0], num_neighbors=[32]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
     
-    val_loader = NeighborLoader(dataset[0], num_neighbors=[20]*(len(F)-1), batch_size=nVal, input_nodes = dataset[0]['val_mask'], shuffle=False)
+    val_loader = NeighborLoader(dataset[0], num_neighbors=[32]*(len(F)-1), batch_size=nVal, input_nodes = dataset[0]['val_mask'], shuffle=False)
 
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, val_loader, model, loss, args, val_mask) 
 
