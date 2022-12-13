@@ -65,18 +65,14 @@ modelList.append(GCN)
 
 loss = torch.nn.NLLLoss()
 for args in [
-        {'batch_size': 128, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 128, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
 # Training and testing
 
-val_mask = dataset[0]['val_mask']
-nVal = torch.sum(val_mask).item()
-test_mask = dataset_transf[0]['test_mask']
-
-another_test_mask = dataset_transf[0]['test_mask']
-nTest = torch.sum(another_test_mask).item()
+nVal = torch.sum(dataset[0]['val_mask']).item()
+nTest = torch.sum(dataset_transf[0]['test_mask']).item()
 
 
 for model in modelList:
