@@ -116,7 +116,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
         correct += pred.eq(label).sum().item()
 
     total = 0
-    for data in loader.dataset:
+    for data in loader:
         total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
 
     return correct / total
