@@ -47,7 +47,7 @@ def train(loader, model, loss_function, args):
     print()
 
     test_loader = loader
-    test_loader.input_nodes = loader.dataset[0]['test_mask']
+    test_loader.input_nodes = loader.dataset['test_mask']
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train

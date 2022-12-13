@@ -73,7 +73,7 @@ for args in [
 
 for model in modelList:
     
-    loader = NeighborLoader(dataset, num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
+    loader = NeighborLoader(dataset[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset[0]['train_mask'], shuffle=False)
     
     test_accs, losses, best_model, best_acc, test_loader = train_test.train(loader, model, loss, args) 
 
@@ -84,7 +84,7 @@ for model in modelList:
     print(train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True))
 
     # Trasferability
-    another_test_loader = DataLoader(dataset_transf, num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
+    another_test_loader = DataLoader(dataset_transf[0], num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
 
     # Run test for our best model to save the predictions!
     print(train_test.test(another_test_loader, best_model, is_validation=False, save_model_preds=True))
