@@ -10,7 +10,7 @@ import copy
 
 from torch_geometric.datasets import TUDataset
 from torch_geometric.datasets import Planetoid
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 
 import torch_geometric.nn as pyg_nn
 
@@ -47,7 +47,7 @@ def train(loader, model, loss_function, args):
     print()
 
     test_loader = loader
-
+    test_loader.input_nodes = loader.dataset[0]['test_mask']
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train
