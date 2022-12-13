@@ -73,10 +73,10 @@ for args in [
 
 val_mask = dataset[0]['val_mask']
 nVal = torch.sum(val_mask).item()
-test_mask = dataset[0]['test_mask']
-nTest = torch.sum(test_mask).item()
+test_mask = dataset_transf[0]['test_mask']
 
 another_test_mask = dataset_transf[0]['test_mask']
+nTest = torch.sum(another_test_mask).item()
 
 
 for model in modelList:
