@@ -46,8 +46,7 @@ def train(loader, model, loss_function, args, val_mask):
     #print("Node task. test set size:", to_print)
     print()
 
-    test_loader = loader
-    test_loader.input_nodes = val_mask
+    test_loader = NeighborLoader(loader.dataset, num_neighbors=[30]*(len(F)-1), batch_size=args.batch_size, input_nodes = loader.dataset['val_mask'], shuffle=False)
     scheduler, opt = build_optimizer(args, model.parameters())
 
     # train
@@ -98,8 +97,8 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
 
         #mask = data.val_mask if is_validation else data.test_mask
         # node classification: only evaluate on nodes in test set
-        pred = pred[mask]
-        label = label[mask]
+        #pred = pred[mask]
+        #label = label[mask]
 
         if save_model_preds:
           print ("Saving Model Predictions for Model Type", test_model.type)
