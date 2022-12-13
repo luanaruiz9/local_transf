@@ -96,7 +96,7 @@ def test(loader, test_model, mask, is_validation=False, save_model_preds=False):
             pred = test_model(data).max(dim=1)[1]
             label = data.y
 
-        #mask = data.val_mask if is_validation else data.test_mask
+        mask = data.val_mask if is_validation else data.test_mask
         # node classification: only evaluate on nodes in test set
         pred = pred[mask]
         label = label[mask]
