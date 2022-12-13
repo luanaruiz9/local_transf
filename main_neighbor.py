@@ -91,7 +91,7 @@ for model in modelList:
     print("Minimum loss: {0}".format(min(losses)))
 
     # Run test for our best model to save the predictions!
-    print(train_test.test(test_loader, best_model, test_mask, is_validation=False, save_model_preds=True))
+    print(train_test.test(test_loader, best_model, val_mask, is_validation=False, save_model_preds=True))
 
     # Trasferability
     another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[30]*(len(F)-1), batch_size=nTest, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
