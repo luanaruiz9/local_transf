@@ -106,7 +106,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data_save)
           # Save locally as csv
-          to_print = str(data[0].num_nodes)
+          to_print = str(data.num_nodes)
           df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
