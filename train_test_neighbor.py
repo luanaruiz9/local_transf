@@ -42,10 +42,6 @@ def build_optimizer(args, params):
 
 
 def train(loader, test_loader, model, loss_function, args):
-    #to_print = np.sum(loader.dataset['test_mask'].numpy())
-
-    #print("Node task. test set size:", to_print)
-    print()
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -101,17 +97,17 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
         pred = pred[mask]
         label = label[mask]
 
-        #if save_model_preds:
-          #print ("Saving Model Predictions for Model Type", test_model.type)
+        if save_model_preds:
+          print ("Saving Model Predictions for Model Type", test_model.type)
 
-          #data = {}
-          #data['pred'] = pred.view(-1).cpu().detach().numpy()
-          #data['label'] = label.view(-1).cpu().detach().numpy()
+          data_save = {}
+          data_save['pred'] = pred.view(-1).cpu().detach().numpy()
+          data_save['label'] = label.view(-1).cpu().detach().numpy()
 
-          #df = pd.DataFrame(data=data)
+          df = pd.DataFrame(data=data_save)
           # Save locally as csv
-          #to_print = str(loader.dataset[0].num_nodes)
-          #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
+          to_print = str(data[0].num_nodes)
+          df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
