@@ -30,7 +30,7 @@ class objectview(object):
 
 # Data
 
-dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
+dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data # Save it to have the same test samples in the transferability test
@@ -39,7 +39,7 @@ m = 10000
 sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 dataset = [sampledData]
 
-dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed', split='random')
+dataset_transf = Planetoid(root='/tmp/pubmed', name='PubMed', split='public')
 data = dataset_transf.data
 data.test_mask = save_test_mask
 dataset_transf = [data]
@@ -65,7 +65,7 @@ modelList.append(GCN)
 
 loss = torch.nn.NLLLoss()
 for args in [
-        {'batch_size': 128, 'epochs': 1000, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
+        {'batch_size': 128, 'epochs': 1000, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
