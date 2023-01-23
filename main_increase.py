@@ -160,7 +160,8 @@ for model_key, model in modelList.items():
     plt.title('Cora')
     #plt.plot(losses, label="training loss" + " - " + model_key)
     if 'large' in model_key:
-        plt.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), label="test accuracy" + " - " + model_key)
+        plt.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), label="last accuracy" + " - " + model_key)
+        plt.plot(best_acc*np.ones(len(test_accs_full)), label="best accuracy" + " - " + model_key)
     else:
         plt.plot(test_accs_full, label="test accuracy" + " - " + model_key)
 
