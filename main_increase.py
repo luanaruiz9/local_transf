@@ -46,10 +46,10 @@ loader_vector = []
 another_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 20
+n_increases = 100
 n_epochs_per_n = int(n_epochs/n_increases)
-increase_rate = 50
-n0 = 2000
+increase_rate = 20
+n0 = 1000
 
 for args2 in [
         {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
