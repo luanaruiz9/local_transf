@@ -169,3 +169,7 @@ plt.xlabel('epochs')
 plt.legend()
 plt.show()
 
+print()
+
+print(time_dict)
+
