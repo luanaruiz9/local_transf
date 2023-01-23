@@ -46,7 +46,7 @@ def LSIGF(weights, S, x):
 
 class GraphFilter(torch.nn.Module):
 
-    def __init__(self, Fin, Fout, K, normalize=True):
+    def __init__(self, Fin, Fout, K, normalize=False):
 
         super(GraphFilter, self).__init__()
         self.Fin = Fin 

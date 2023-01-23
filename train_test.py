@@ -40,12 +40,12 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(loader, model, loss_function, args):
+def train(loader, test_loader, model, loss_function, args):
 
-    print("Node task. test set size:", np.sum(loader.dataset[0]['test_mask'].numpy()))
+    print("Node task. training set size:", np.sum(loader.dataset[0]['train_mask'].numpy()))
     print()
 
-    test_loader = loader
+    #test_loader = loader
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -54,6 +54,7 @@ def train(loader, model, loss_function, args):
     test_accs = []
     best_acc = 0
     best_model = None
+    start = time.time()
     for epoch in trange(args.epochs, desc="Training", unit="Epochs"):
         total_loss = 0
         model.train()
@@ -78,8 +79,10 @@ def train(loader, model, loss_function, args):
             best_model = copy.deepcopy(model)
         else:
           test_accs.append(test_accs[-1])
-    
-    return test_accs, losses, best_model, best_acc, test_loader
+        end = time.time()
+    final_model = model
+    training_time = end-start
+    return test_accs, losses, best_model, final_model, best_acc, loader, training_time
 
 def test(loader, test_model, is_validation=False, save_model_preds=False):
     test_model.eval()
@@ -106,7 +109,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
           df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('PubMed-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
+          df.to_csv('Cora-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
