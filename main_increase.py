@@ -37,7 +37,7 @@ class objectview(object):
         self.__dict__ = d
 
 for args in [
-        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -52,7 +52,7 @@ increase_rate = 20
 n0 = 1000
 
 for args2 in [
-        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args2 = objectview(args2)
 
@@ -160,7 +160,7 @@ for model_key, model in modelList.items():
     plt.title('Cora')
     #plt.plot(losses, label="training loss" + " - " + model_key)
     if 'large' in model_key:
-        plt.plot(test_accs_full, label="test accuracy" + " - " + model_key)
+        plt.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), label="test accuracy" + " - " + model_key)
     else:
         plt.plot(test_accs_full, label="test accuracy" + " - " + model_key)
 
