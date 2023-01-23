@@ -62,7 +62,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/cora', name='Cora', split='public')
+dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
@@ -157,7 +157,7 @@ for model_key, model in modelList.items():
 
     print()
 
-    plt.title('Cora')
+    plt.title('CiteSeer')
     #plt.plot(losses, label="training loss" + " - " + model_key)
     if 'large' in model_key:
         plt.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), label=model_key + " (last)")
