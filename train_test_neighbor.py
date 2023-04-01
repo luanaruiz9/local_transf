@@ -50,6 +50,7 @@ def train(loader, test_loader, model, loss_function, args):
     test_accs = []
     best_acc = 0
     best_model = None
+    start = time.time()
     for epoch in trange(args.epochs, desc="Training", unit="Epochs"):
         total_loss = 0
         model.train()
@@ -77,8 +78,10 @@ def train(loader, test_loader, model, loss_function, args):
             best_model = copy.deepcopy(model)
         else:
           test_accs.append(test_accs[-1])
-    
-    return test_accs, losses, best_model, best_acc, test_loader
+        end = time.time()
+    final_model = model
+    training_time = end-start
+    return test_accs, losses, best_model, final_model, best_acc, test_loader, training_time
 
 def test(loader, test_model, is_validation=False, save_model_preds=False):
     test_model.eval()
@@ -104,10 +107,10 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
           data_save['pred'] = pred.view(-1).cpu().detach().numpy()
           data_save['label'] = label.view(-1).cpu().detach().numpy()
 
-          df = pd.DataFrame(data=data_save)
+          #df = pd.DataFrame(data=data_save)
           # Save locally as csv
-          to_print = str(data.num_nodes)
-          df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
+          #to_print = str(data.num_nodes)
+          #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 

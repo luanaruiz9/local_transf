@@ -1,23 +1,10 @@
 import time
 
-import networkx as nx
 import numpy as np
 import torch
 import torch.optim as optim
 from tqdm import trange
-import pandas as pd
 import copy
-
-from torch_geometric.datasets import TUDataset
-from torch_geometric.datasets import Planetoid
-from torch_geometric.data import DataLoader
-
-import torch_geometric.nn as pyg_nn
-
-import matplotlib.pyplot as plt
-
-import torch.optim as optim
-
 
 def build_optimizer(args, params):
 
@@ -107,9 +94,9 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
           data['pred'] = pred.view(-1).cpu().detach().numpy()
           data['label'] = label.view(-1).cpu().detach().numpy()
 
-          df = pd.DataFrame(data=data)
+          #df = pd.DataFrame(data=data)
           # Save locally as csv
-          df.to_csv('Cora-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
+          #df.to_csv('Cora-Node-' + test_model.type + str(loader.dataset[0].num_nodes) + '.csv', sep=',', index=False)
             
         correct += pred.eq(label).sum().item()
 
