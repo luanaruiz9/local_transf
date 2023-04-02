@@ -18,7 +18,7 @@ import train_test_neighbor as train_test
 ""
 ""
 
-limit_epoch = 200
+limit_epoch = 250
 
 thisFilename = 'pubmed_node_cap' # This is the general name of all related files
 
