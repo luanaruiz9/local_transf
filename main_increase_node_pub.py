@@ -6,19 +6,19 @@ import torch
 import pickle as pkl
 
 from torch_geometric.datasets import Planetoid
-from torch_geometric.loader import DataLoader
+from torch_geometric.loader import NeighborLoader, LinkNeighborLoader
 
 import matplotlib.pyplot as plt
 
 import gnn
-import train_test
+import train_test_neighbor as train_test
 
 # TO DO: 
 # 5) In the other script (neighbor sampling): do the same that I do here
 ""
 ""
 
-thisFilename = 'citeseer' # This is the general name of all related files
+thisFilename = 'pubmed_node' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -40,22 +40,24 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 256, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
 dataset_vector = []
 loader_vector = []
+val_loader_vector = []
 another_loader_vector = []
+another_val_loader_vector = []
 
 n_epochs = args.epochs
 n_increases = 100
 n_epochs_per_n = int(n_epochs/n_increases)
-increase_rate = 20
-n0 = 1000
+increase_rate = 100
+n0 = 5000
 
 for args2 in [
-        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 256, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args2 = objectview(args2)
 
@@ -65,25 +67,13 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='public')
+dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
 m = n0 + increase_rate*(n_increases)
 data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
-
-# Trasferability    
-dataset_transf = [data]
-another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
-
-for i in range(n_increases+1):
-    m = n0 + increase_rate*i
-    sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
-    # fix here; val has to be on large graph
-    dataset = [sampledData]
-    dataset_vector.append(dataset)
-    loader_vector.append(DataLoader(dataset, batch_size=args.batch_size, shuffle=False))
-    another_loader_vector.append(another_test_loader)
+nVal = torch.sum(dataset[0]['val_mask']).item()
 
 # GNN models
 
@@ -109,14 +99,48 @@ GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
 color = {}
-color['SAGE'] = 'gray'
-color['GCN'] = 'violet'
+color['SAGE'] = 'orange'
+color['GCN'] = 'mediumpurple'
+
+n_neigh = -1
+
+# Trasferability    
+dataset_transf = [data]
+nTest = torch.sum(dataset_transf[0]['test_mask']).item()
+another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
+                                     batch_size=nTest, input_nodes=dataset_transf[0]['test_mask'], shuffle=False)
+
+for i in range(n_increases+1):
+    m = n0 + increase_rate*i
+    sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+    # fix here; val has to be on large graph
+    dataset = [sampledData]
+    dataset_vector.append(dataset)
+    
+    loader = LinkNeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
+                            batch_size=args.batch_size, edge_label_index=sampledData.edge_index, shuffle=False)
+    val_loader = NeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
+                                batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
+    another_loader = LinkNeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
+                                batch_size=args.batch_size, edge_label_index=dataset_transf[0].edge_index, shuffle=False)
+    another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
+                                batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
+    
+    loader_vector.append(loader)
+    val_loader_vector.append(val_loader)
+    another_loader_vector.append(another_loader)
+    another_val_loader_vector.append(another_val_loader)
 
 loader_vector_dict = dict()
+val_loader_vector_dict = dict()
 loader_vector_dict['SAGE'] = loader_vector
 loader_vector_dict['GCN'] = loader_vector
+val_loader_vector_dict['SAGE'] = val_loader_vector
+val_loader_vector_dict['GCN'] = val_loader_vector
 loader_vector_dict['SAGE full'] = another_loader_vector
 loader_vector_dict['GCN full'] = another_loader_vector
+val_loader_vector_dict['SAGE full'] = another_val_loader_vector
+val_loader_vector_dict['GCN full'] = another_val_loader_vector
 
 test_acc_dict = dict()
 time_dict = dict()
@@ -137,7 +161,7 @@ for model_key, model in modelList.items():
         #loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
         best_acc_old = best_acc
         best_model_old = best_model
-        test_accs, losses, best_model, last_model, best_acc, test_loader, training_time = train_test.train(loader, loader, model, loss, args2) 
+        test_accs, losses, best_model, last_model, best_acc, test_loader, training_time = train_test.train(loader, val_loader, model, loss, args2) 
         if count == 0:
             test_accs_full = test_accs
             total_time = training_time

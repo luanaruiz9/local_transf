@@ -38,8 +38,9 @@ if not os.path.exists(saveDir):
 class objectview(object):
     def __init__(self, d):
         self.__dict__ = d
+        
 for args in [
-        {'batch_size': 256, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 128, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -56,7 +57,7 @@ increase_rate = 20
 n0 = 1000
 
 for args2 in [
-        {'batch_size': 256, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 128, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args2 = objectview(args2)
 
@@ -86,16 +87,20 @@ K = [5, 5]
 #modelList.append(GNN)
 
 SAGE = gnn.GNN('sage', F, MLP, True)
-modelList['sage'] = SAGE
+modelList['SAGE'] = SAGE
 
 GCN = gnn.GNN('gcn', F, MLP, True)
-modelList['gcn'] = GCN
+modelList['GCN'] = GCN
 
 SAGELarge = gnn.GNN('sage', F, MLP, True)
-modelList['sage_large'] = SAGELarge
+modelList['SAGE full'] = SAGELarge
 
 GCNLarge = gnn.GNN('gcn', F, MLP, True)
-modelList['gcn_large'] = GCNLarge
+modelList['GCN full'] = GCNLarge
+
+color = {}
+color['SAGE'] = 'orange'
+color['GCN'] = 'mediumpurple'
 
 n_neigh = -1
 
@@ -103,7 +108,7 @@ n_neigh = -1
 dataset_transf = [data]
 nTest = torch.sum(dataset_transf[0]['test_mask']).item()
 another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
-                                     batch_size=nTest, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
+                                     batch_size=nTest, input_nodes=dataset_transf[0]['test_mask'], shuffle=False)
 
 for i in range(n_increases+1):
     m = n0 + increase_rate*i
@@ -128,14 +133,14 @@ for i in range(n_increases+1):
 
 loader_vector_dict = dict()
 val_loader_vector_dict = dict()
-loader_vector_dict['sage'] = loader_vector
-loader_vector_dict['gcn'] = loader_vector
-val_loader_vector_dict['sage'] = val_loader_vector
-val_loader_vector_dict['gcn'] = val_loader_vector
-loader_vector_dict['sage_large'] = another_loader_vector
-loader_vector_dict['gcn_large'] = another_loader_vector
-val_loader_vector_dict['sage_large'] = another_val_loader_vector
-val_loader_vector_dict['gcn_large'] = another_val_loader_vector
+loader_vector_dict['SAGE'] = loader_vector
+loader_vector_dict['GCN'] = loader_vector
+val_loader_vector_dict['SAGE'] = val_loader_vector
+val_loader_vector_dict['GCN'] = val_loader_vector
+loader_vector_dict['SAGE full'] = another_loader_vector
+loader_vector_dict['GCN full'] = another_loader_vector
+val_loader_vector_dict['SAGE full'] = another_val_loader_vector
+val_loader_vector_dict['GCN full'] = another_val_loader_vector
 
 test_acc_dict = dict()
 time_dict = dict()
@@ -186,12 +191,17 @@ for model_key, model in modelList.items():
     print()
 
     #plt.plot(losses, label="training loss" + " - " + model_key)
-    if 'large' in model_key:
-        fig_last.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), label=model_key)
-        fig_best.plot(best_acc*np.ones(len(test_accs_full)), label=model_key)
+    if 'SAGE' in model_key:
+        col = color['SAGE']
     else:
-        fig_last.plot(test_accs_full, label=model_key)
-        fig_best.plot(test_accs_full, label=model_key)
+        col = color['GCN']
+        
+    if 'full' in model_key:
+        fig_last.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), '--', color=col, label=model_key)
+        fig_best.plot(best_acc*np.ones(len(test_accs_full)), '--', color=col, label=model_key)
+    else:
+        fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
+        fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
