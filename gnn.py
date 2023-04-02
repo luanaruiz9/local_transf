@@ -1,12 +1,9 @@
-import numpy as np
 import math
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGEConv, GCNConv
-import networkx
-from networkx import from_edgelist, adjacency_matrix
 import scipy
 
 
@@ -18,15 +15,6 @@ def LSIGF(weights, S, x):
     '''    
     # Number of filter taps
     K = len(weights)
-    
-    # Number of output features
-    F = weights[0].shape[1]
- 
-    # Number of input features
-    G = weights[0].shape[0]
-    
-    # Number of nodes
-    N = S.shape[0]
 
     # Create list to store graph diffused signals
     zs = [x]
@@ -46,7 +34,7 @@ def LSIGF(weights, S, x):
 
 class GraphFilter(torch.nn.Module):
 
-    def __init__(self, Fin, Fout, K, normalize=False):
+    def __init__(self, Fin, Fout, K, normalize=True):
 
         super(GraphFilter, self).__init__()
         self.Fin = Fin 
@@ -109,7 +97,7 @@ class GNN(torch.nn.Module):
             
     def forward(self, data):
 
-        y, edge_index, edge_weight, batch = data.x, data.edge_index, data.edge_weight, data.batch
+        y, edge_index, edge_weight = data.x, data.edge_index, data.edge_weight
 
         for i, layer in enumerate(self.layers):
             if self.type == 'gnn':

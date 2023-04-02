@@ -18,7 +18,7 @@ import train_test_neighbor as train_test
 ""
 ""
 
-thisFilename = 'citeseer_node' # This is the general name of all related files
+thisFilename = 'cora_node' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -67,7 +67,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='public')
+dataset = Planetoid(root='/tmp/cora', name='Cora', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
@@ -117,11 +117,11 @@ for i in range(n_increases+1):
     dataset = [sampledData]
     dataset_vector.append(dataset)
     
-    loader = LinkNeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
+    loader = LinkNeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), neg_sampling_ratio=1,
                             batch_size=args.batch_size, edge_label_index=sampledData.edge_index, shuffle=False)
     val_loader = NeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
-    another_loader = LinkNeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
+    another_loader = LinkNeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), neg_sampling_ratio=1,
                                 batch_size=args.batch_size, edge_label_index=dataset_transf[0].edge_index, shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
