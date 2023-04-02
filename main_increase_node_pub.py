@@ -18,7 +18,9 @@ import train_test_neighbor as train_test
 ""
 ""
 
-thisFilename = 'pubmed_node' # This is the general name of all related files
+limit_epoch = 200
+
+thisFilename = 'pubmed_node_cap' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -93,7 +95,7 @@ GCN = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN'] = GCN
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN'] = GNN
+#modelList['GNN'] = GNN
 
 SAGELarge = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE full'] = SAGELarge
@@ -102,7 +104,7 @@ GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
 GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN full'] = GNNLarge
+#modelList['GNN full'] = GNNLarge
 
 color = {}
 color['SAGE'] = 'orange'
@@ -118,7 +120,9 @@ another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*
                                      batch_size=nTest, input_nodes=dataset_transf[0]['test_mask'], shuffle=False)
 
 for i in range(n_increases+1):
-    m = n0 + increase_rate*i
+    epoch = i*n_epochs_per_n
+    if epoch < limit_epoch:
+        m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
@@ -215,12 +219,14 @@ for model_key, model in modelList.items():
     else:
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
-        
+   
+fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
 fig1.savefig(os.path.join(saveDir,'accuracies_last'))
 
+fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()

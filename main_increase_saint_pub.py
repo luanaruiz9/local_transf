@@ -14,7 +14,7 @@ import gnn
 import train_test_saint as train_test
 
 # TO DO: 
-# 5) In the other script (neighbor sampling): do the same that I do here
+# Normalization??? Check sample_radius parameter
 ""
 ""
 
