@@ -91,10 +91,10 @@ modelList = dict()
 
 F = [F0, 64, 32]
 MLP = [32, C]
-K = [5, 5]
+K = [2, 2]
 
-#GNN = gnn.GNN('gnn', F, MLP, True, K)
-#modelList.append(GNN)
+GNN = gnn.GNN('gnn', F, MLP, True, K)
+modelList['GNN'] = GNN
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE'] = SAGE
@@ -108,15 +108,21 @@ modelList['SAGE full'] = SAGELarge
 GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
+GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
+modelList['GNN full'] = GNNLarge
+
 color = {}
 color['SAGE'] = 'gray'
 color['GCN'] = 'violet'
+color['GNN'] = 'cadetblue'
 
 loader_vector_dict = dict()
 loader_vector_dict['SAGE'] = loader_vector
 loader_vector_dict['GCN'] = loader_vector
+loader_vector_dict['GNN'] = loader_vector
 loader_vector_dict['SAGE full'] = another_loader_vector
 loader_vector_dict['GCN full'] = another_loader_vector
+loader_vector_dict['GNN full'] = another_loader_vector
 
 test_acc_dict = dict()
 time_dict = dict()
@@ -169,8 +175,10 @@ for model_key, model in modelList.items():
     #plt.plot(losses, label="training loss" + " - " + model_key)
     if 'SAGE' in model_key:
         col = color['SAGE']
-    else:
+    elif 'GCN' in model_key:
         col = color['GCN']
+    else:
+        col = color['GNN']
         
     if 'full' in model_key:
         fig_last.plot(test_accs_full[-1]*np.ones(len(test_accs_full)), '--', color=col, label=model_key)
