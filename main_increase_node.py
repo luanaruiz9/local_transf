@@ -18,7 +18,7 @@ import train_test_neighbor as train_test
 ""
 ""
 
-thisFilename = 'cora_node' # This is the general name of all related files
+thisFilename = 'citeseer_node' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -67,7 +67,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/cora', name='Cora', split='public')
+dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 

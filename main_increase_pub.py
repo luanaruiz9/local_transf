@@ -122,8 +122,10 @@ color['GNN'] = 'cadetblue'
 loader_vector_dict = dict()
 loader_vector_dict['SAGE'] = loader_vector
 loader_vector_dict['GCN'] = loader_vector
+loader_vector_dict['GNN'] = loader_vector
 loader_vector_dict['SAGE full'] = another_loader_vector
 loader_vector_dict['GCN full'] = another_loader_vector
+loader_vector_dict['GNN full'] = another_loader_vector
 
 test_acc_dict = dict()
 time_dict = dict()
