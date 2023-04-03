@@ -20,7 +20,7 @@ import train_test
 
 limit_epoch = 0
 
-thisFilename = 'pubmed_500' # This is the general name of all related files
+thisFilename = 'pubmed_1000' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -54,7 +54,7 @@ n_epochs = args.epochs
 n_increases = n_epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 100
-n0 = 500
+n0 = 1000
 
 for args2 in [
         {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
