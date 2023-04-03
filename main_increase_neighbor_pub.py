@@ -18,9 +18,9 @@ import train_test_neighbor as train_test
 ""
 ""
 
-limit_epoch = 300
+limit_epoch = 500
 
-thisFilename = 'pubmed_neigh_cap' # This is the general name of all related files
+thisFilename = 'pubmed_neigh' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -219,13 +219,13 @@ for model_key, model in modelList.items():
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
  
-fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
+#fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
 fig1.savefig(os.path.join(saveDir,'accuracies_last'))
 
-fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
+#fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()
