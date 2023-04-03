@@ -117,7 +117,7 @@ another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*
 
 for i in range(n_increases+1):
     epoch = i*n_epochs_per_n
-    if epoch < limit_epoch:
+    if epoch <= limit_epoch:
         m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph

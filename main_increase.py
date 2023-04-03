@@ -80,7 +80,7 @@ another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shu
 
 for i in range(n_increases+1):
     epoch = i*n_epochs_per_n
-    if epoch < limit_epoch:
+    if epoch <= limit_epoch:
         m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
