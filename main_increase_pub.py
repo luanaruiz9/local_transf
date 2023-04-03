@@ -107,7 +107,7 @@ GCN = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN'] = GCN
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN'] = GNN
+#modelList['GNN'] = GNN
 
 SAGELarge = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE full'] = SAGELarge
@@ -116,7 +116,7 @@ GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
 GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN full'] = GNNLarge
+#modelList['GNN full'] = GNNLarge
 
 color = {}
 color['SAGE'] = 'gray'
