@@ -18,9 +18,9 @@ import train_test_neighbor as train_test
 ""
 ""
 
-limit_epoch = 500
+limit_epoch = 0
 
-thisFilename = 'cite_neigh' # This is the general name of all related files
+thisFilename = 'citeseer_neigh_250' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -42,7 +42,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': 50, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args = objectview(args)
 
@@ -53,13 +53,13 @@ another_loader_vector = []
 another_val_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 100
+n_increases = args.epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 20
-n0 = 1000
+n0 = 250
 
 for args2 in [
-        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args2 = objectview(args2)
 
@@ -73,7 +73,7 @@ dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
-m = n0 + increase_rate*(n_increases)
+m = data.num_nodes
 data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 nVal = torch.sum(dataset[0]['val_mask']).item()
 
