@@ -231,7 +231,7 @@ fig_best.set_xlabel('Epochs')
 fig_best.legend()
 fig2.savefig(os.path.join(saveDir,'accuracies_best'))
 
-plt.show()
+#plt.show()
 
 print()
 
