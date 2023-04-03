@@ -20,7 +20,7 @@ import train_test_neighbor as train_test
 
 limit_epoch = 0
 
-thisFilename = 'cora_node_500'
+thisFilename = 'citeseer_node_250'
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
 
@@ -41,7 +41,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 64, 'epochs': 150, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 128, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args = objectview(args)
 
@@ -52,13 +52,13 @@ another_loader_vector = []
 another_val_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 150
+n_increases = n_epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 20
-n0 = 500
+n0 = 250
 
 for args2 in [
-        {'batch_size': 64, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 128, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args2 = objectview(args2)
 
@@ -68,7 +68,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/cora', name='Cora', split='full')
+dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
