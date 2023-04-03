@@ -20,7 +20,7 @@ import train_test_neighbor as train_test
 
 limit_epoch = 0
 
-thisFilename = 'citeseer_neigh_800' # This is the general name of all related files
+thisFilename = 'cora_neigh_800' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -42,7 +42,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 150, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': 150, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args = objectview(args)
 
@@ -59,7 +59,7 @@ increase_rate = 20
 n0 = 800
 
 for args2 in [
-        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args2 = objectview(args2)
 
@@ -69,7 +69,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='full')
+dataset = Planetoid(root='/tmp/cora', name='Cora', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
