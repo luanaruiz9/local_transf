@@ -18,9 +18,9 @@ import train_test
 ""
 ""
 
-limit_epoch = 300
+limit_epoch = 0
 
-thisFilename = 'pubmed_cap' # This is the general name of all related files
+thisFilename = 'pubmed_500' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -42,7 +42,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -51,10 +51,10 @@ loader_vector = []
 another_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 100
+n_increases = n_epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 100
-n0 = 5000
+n0 = 500
 
 for args2 in [
         {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
@@ -71,7 +71,7 @@ dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
-m = n0 + increase_rate*(n_increases)
+m = data.num_nodes
 data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 
 # Trasferability    
@@ -194,13 +194,13 @@ for model_key, model in modelList.items():
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
  
-fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
+#fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
 fig1.savefig(os.path.join(saveDir,'accuracies_last'))
 
-fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
+#fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()
