@@ -18,7 +18,9 @@ import train_test
 ""
 ""
 
-thisFilename = 'cora' # This is the general name of all related files
+limit_epoch = 300
+
+thisFilename = 'citeseer_cap' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -65,7 +67,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/cora', name='Cora', split='public')
+dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='public')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
@@ -77,7 +79,9 @@ dataset_transf = [data]
 another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
 
 for i in range(n_increases+1):
-    m = n0 + increase_rate*i
+    epoch = i*n_epochs_per_n
+    if epoch < limit_epoch:
+        m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
@@ -94,7 +98,7 @@ MLP = [32, C]
 K = [2, 2]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN'] = GNN
+#modelList['GNN'] = GNN
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE'] = SAGE
@@ -109,7 +113,7 @@ GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
 GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN full'] = GNNLarge
+#modelList['GNN full'] = GNNLarge
 
 color = {}
 color['SAGE'] = 'gray'
@@ -186,12 +190,14 @@ for model_key, model in modelList.items():
     else:
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
-        
+
+fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
 fig1.savefig(os.path.join(saveDir,'accuracies_last'))
 
+fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()

@@ -18,7 +18,9 @@ import train_test_neighbor as train_test
 ""
 ""
 
-thisFilename = 'cora_neigh' # This is the general name of all related files
+limit_epoch = 100
+
+thisFilename = 'cora_neigh_cap' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -84,7 +86,7 @@ MLP = [32, C]
 K = [2, 2]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN'] = GNN
+#modelList['GNN'] = GNN
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE'] = SAGE
@@ -99,7 +101,7 @@ GCNLarge = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN full'] = GCNLarge
 
 GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
-modelList['GNN full'] = GNNLarge
+#modelList['GNN full'] = GNNLarge
 
 color = {}
 color['SAGE'] = 'yellowgreen'
@@ -113,7 +115,9 @@ another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(
                                      batch_size=nTest, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
 
 for i in range(n_increases+1):
-    m = n0 + increase_rate*i
+    epoch = i*n_epochs_per_n
+    if epoch < limit_epoch:
+        m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
@@ -210,12 +214,14 @@ for model_key, model in modelList.items():
     else:
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
-        
+
+fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
 fig1.savefig(os.path.join(saveDir,'accuracies_last'))
 
+fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()
