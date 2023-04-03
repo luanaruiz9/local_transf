@@ -20,7 +20,7 @@ import train_test
 
 limit_epoch = 0
 
-thisFilename = 'cora_800' # This is the general name of all related files
+thisFilename = 'citeseer_800' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -51,7 +51,7 @@ loader_vector = []
 another_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 100
+n_increases = n_epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 20
 n0 = 800
@@ -67,7 +67,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/cora', name='Cora', split='full')
+dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
