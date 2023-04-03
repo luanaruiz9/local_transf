@@ -67,7 +67,7 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='public')
+dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
