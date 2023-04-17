@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 17 17:13:38 2023
+
+@author: Luana Ruiz
+"""
+
 import os
 import datetime
 
@@ -14,11 +21,16 @@ import gnn
 import train_test_saint as train_test
 
 # TO DO: 
-# Normalization??? Check sample_radius parameter
+# 5) In the other script (neighbor sampling): do the same that I do here
 ""
 ""
 
-thisFilename = 'pubmed_edge_saint' # This is the general name of all related files
+figSize = 5
+plt.rcParams.update({'font.size': 16})
+
+limit_epoch = 0
+
+thisFilename = 'pubmed_saint_edge_3000' # This is the general name of all related files
 
 saveDirRoot = 'experiments' # In this case, relative location
 saveDir = os.path.join(saveDirRoot, thisFilename) 
@@ -40,7 +52,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 2500, 'epochs': 500, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 256, 'epochs': 1000, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001}, # node is 1e-3
     ]:
         args = objectview(args)
 
@@ -51,13 +63,13 @@ another_loader_vector = []
 another_val_loader_vector = []
 
 n_epochs = args.epochs
-n_increases = 100
+n_increases = n_epochs
 n_epochs_per_n = int(n_epochs/n_increases)
 increase_rate = 100
-n0 = 5000
+n0 = 3000
 
 for args2 in [
-        {'batch_size': 2500, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 256, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001}, # node is 1e-3
     ]:
         args2 = objectview(args2)
 
@@ -67,11 +79,11 @@ loss = torch.nn.NLLLoss()
 
 # Data
 
-dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='public')
+dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
-m = n0 + increase_rate*(n_increases)
+m = data.num_nodes
 data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
 nVal = torch.sum(dataset[0]['val_mask']).item()
 
@@ -102,8 +114,8 @@ GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
 #modelList['GNN full'] = GNNLarge
 
 color = {}
-color['SAGE'] = 'lightseagreen'
-color['GCN'] = 'limegreen'
+color['SAGE'] = 'firebrick'
+color['GCN'] = 'steelblue'
 color['GNN'] = 'dodgerblue'
 
 n_neigh = -1
@@ -111,11 +123,13 @@ n_neigh = -1
 # Trasferability    
 dataset_transf = [data]
 nTest = torch.sum(dataset_transf[0]['test_mask']).item()
-another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
-                                     batch_size=nTest, input_nodes=dataset_transf[0]['test_mask'], shuffle=False)
+another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(F)-1), 
+                                     batch_size=nTest, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
 
 for i in range(n_increases+1):
-    m = n0 + increase_rate*i
+    epoch = i*n_epochs_per_n
+    if epoch <= limit_epoch:
+        m = n0 + increase_rate*i
     sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
@@ -152,8 +166,8 @@ test_acc_dict = dict()
 time_dict = dict()
 best_accs = dict()
 
-fig1, fig_last = plt.subplots()
-fig2, fig_best = plt.subplots()
+fig1, fig_last = plt.subplots(figsize=(1.4*figSize, 1*figSize))
+fig2, fig_best = plt.subplots(figsize=(1.4*figSize, 1*figSize))
 
 # Training and testing
 
@@ -210,16 +224,18 @@ for model_key, model in modelList.items():
     else:
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
-        
+
+#fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
-fig1.savefig(os.path.join(saveDir,'accuracies_last'))
+fig1.savefig(os.path.join(saveDir,'accuracies_last.pdf'))
 
+#fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()
-fig2.savefig(os.path.join(saveDir,'accuracies_best'))
+fig2.savefig(os.path.join(saveDir,'accuracies_best.pdf'))
 
 plt.show()
 
