@@ -135,10 +135,10 @@ for i in range(n_increases+1):
     dataset = [sampledData]
     dataset_vector.append(dataset)
     
-    loader = GraphSAINTRandomWalkSampler(sampledData, walk_length=8, batch_size=args.batch_size, shuffle=False)
+    loader = GraphSAINTRandomWalkSampler(sampledData, walk_length=args.batch_size, batch_size=args.batch_size, shuffle=False)
     val_loader = NeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
-    another_loader = GraphSAINTRandomWalkSampler(dataset_transf[0], walk_length=8, batch_size=args.batch_size, shuffle=False)
+    another_loader = GraphSAINTRandomWalkSampler(dataset_transf[0], walk_length=args.batch_size, batch_size=args.batch_size, shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
