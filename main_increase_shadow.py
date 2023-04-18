@@ -52,7 +52,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 64, 'epochs': 600, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 1024, 'epochs': 600, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -69,7 +69,7 @@ increase_rate = 20
 n0 = 1000
 
 for args2 in [
-        {'batch_size': 64, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 1024, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args2 = objectview(args2)
 
@@ -135,10 +135,10 @@ for i in range(n_increases+1):
     dataset = [sampledData]
     dataset_vector.append(dataset)
     
-    loader = ShaDowKHopSampler(sampledData, depth=1, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], shuffle=False)
+    loader = ShaDowKHopSampler(sampledData, depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], shuffle=False)
     val_loader = NeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
-    another_loader = ShaDowKHopSampler(dataset_transf[0], depth=1, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], shuffle=False)
+    another_loader = ShaDowKHopSampler(dataset_transf[0], depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
