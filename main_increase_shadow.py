@@ -135,10 +135,10 @@ for i in range(n_increases+1):
     dataset = [sampledData]
     dataset_vector.append(dataset)
     
-    loader = ShaDowKHopSampler(sampledData, depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], shuffle=False)
+    loader = ShaDowKHopSampler(sampledData, depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = sampledData['train_mask'], replace=True, shuffle=False)
     val_loader = NeighborLoader(sampledData, num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
-    another_loader = ShaDowKHopSampler(dataset_transf[0], depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = dataset_transf[0]['train_mask'], shuffle=False)
+    another_loader = ShaDowKHopSampler(dataset_transf[0], depth=2, num_neighbors=8, batch_size=args.batch_size, node_idx = dataset_transf[0]['train_mask'], replace=True, shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[n_neigh]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
