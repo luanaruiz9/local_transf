@@ -1,3 +1,4 @@
+import sys
 import os
 import datetime
 
@@ -12,28 +13,22 @@ import matplotlib.pyplot as plt
 
 import gnn
 import train_test
+from aux_functions import return_node_idx
 
 # TO DO: 
 # 5) In the other script (neighbor sampling): do the same that I do here
 ""
 ""
 
-limit_epoch = 0
+# total arguments
+dataset_name = sys.argv[1]
+n0 = int(sys.argv[2])
+n_epochs_per_n = int(sys.argv[3])
 
-thisFilename = 'pubmed_3000' # This is the general name of all related files
+figSize = 5
+plt.rcParams.update({'font.size': 16})
 
-saveDirRoot = 'experiments' # In this case, relative location
-saveDir = os.path.join(saveDirRoot, thisFilename) 
-
-#\\\ Create .txt to store the values of the setting parameters for easier
-# reference when running multiple experiments
-today = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-# Append date and time of the run to the directory, to avoid several runs of
-# overwritting each other.
-saveDir = saveDir + '-' + today
-# Create directory 
-if not os.path.exists(saveDir):
-    os.makedirs(saveDir)
+#limit_epoch = 0
 
 # Aux class
 
@@ -50,11 +45,27 @@ dataset_vector = []
 loader_vector = []
 another_loader_vector = []
 
+#n0 = 2000
 n_epochs = args.epochs
-n_increases = n_epochs
-n_epochs_per_n = int(n_epochs/n_increases)
-increase_rate = 100
-n0 = 3000
+#n_increases = n_epochs
+#n_epochs_per_n = 10#int(n_epochs/n_increases)
+n_increases = int(n_epochs/n_epochs_per_n)
+#increase_rate = 20
+
+thisFilename = dataset_name + '_' + str(n0) + '_' + str(n_epochs_per_n) #'800' # This is the general name of all related files
+
+saveDirRoot = 'experiments' # In this case, relative location
+saveDir = os.path.join(saveDirRoot, thisFilename) 
+
+#\\\ Create .txt to store the values of the setting parameters for easier
+# reference when running multiple experiments
+today = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+# Append date and time of the run to the directory, to avoid several runs of
+# overwritting each other.
+saveDir = saveDir + '-' + today
+# Create directory 
+if not os.path.exists(saveDir):
+    os.makedirs(saveDir)
 
 for args2 in [
         {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
@@ -73,16 +84,19 @@ C = dataset.num_classes
 data = dataset.data 
 m = data.num_nodes
 data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+edge_list = data.edge_index
 
 # Trasferability    
 dataset_transf = [data]
 another_test_loader = DataLoader(dataset_transf, batch_size=args.batch_size, shuffle=False)
 
+m = n0
 for i in range(n_increases+1):
-    epoch = i*n_epochs_per_n
-    if epoch <= limit_epoch:
-        m = n0 + increase_rate*i
-    sampledData = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+    #epoch = i*n_epochs_per_n
+    #if epoch <= limit_epoch:
+    #    m = n0 + increase_rate*i
+    idx = return_node_idx(edge_list,m)
+    sampledData = data.subgraph(torch.tensor(idx))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
     dataset_vector.append(dataset)
@@ -97,17 +111,14 @@ F = [F0, 64, 32]
 MLP = [32, C]
 K = [2, 2]
 
-#GNN = gnn.GNN('gnn', F, MLP, True, K)
-#modelList.append(GNN)
+GNN = gnn.GNN('gnn', F, MLP, True, K)
+#modelList['GNN'] = GNN
 
 SAGE = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE'] = SAGE
 
 GCN = gnn.GNN('gcn', F, MLP, True)
 modelList['GCN'] = GCN
-
-GNN = gnn.GNN('gnn', F, MLP, True, K)
-#modelList['GNN'] = GNN
 
 SAGELarge = gnn.GNN('sage', F, MLP, True)
 modelList['SAGE full'] = SAGELarge
@@ -135,8 +146,8 @@ test_acc_dict = dict()
 time_dict = dict()
 best_accs = dict()
 
-fig1, fig_last = plt.subplots()
-fig2, fig_best = plt.subplots()
+fig1, fig_last = plt.subplots(figsize=(1.4*figSize, 1*figSize))
+fig2, fig_best = plt.subplots(figsize=(1.4*figSize, 1*figSize))
 
 # Training and testing
 
@@ -193,20 +204,20 @@ for model_key, model in modelList.items():
     else:
         fig_last.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
         fig_best.plot(test_accs_full, color=col, alpha=0.5, label=model_key)
- 
+
 #fig_last.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_last.set_ylabel('Accuracy')
 fig_last.set_xlabel('Epochs')
 fig_last.legend()
-fig1.savefig(os.path.join(saveDir,'accuracies_last'))
+fig1.savefig(os.path.join(saveDir,'accuracies_last.pdf'))
 
 #fig_best.axvline(x = limit_epoch, alpha=0.8, linestyle=':', color = 'black')        
 fig_best.set_ylabel('Accuracy')
 fig_best.set_xlabel('Epochs')
 fig_best.legend()
-fig2.savefig(os.path.join(saveDir,'accuracies_best'))
+fig2.savefig(os.path.join(saveDir,'accuracies_best.pdf'))
 
-#plt.show()
+plt.show()
 
 print()
 
