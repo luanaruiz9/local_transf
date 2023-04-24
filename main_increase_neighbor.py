@@ -118,9 +118,9 @@ GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
 #modelList['GNN full'] = GNNLarge
 
 color = {}
-color['SAGE'] = 'yellowgreen'
-color['GCN'] = 'cornflowerblue'
-color['GNN'] = 'gold'
+color['SAGE'] = 'orange'
+color['GCN'] = 'mediumpurple'
+color['GNN'] = 'dodgerblue'
 
 # Trasferability    
 dataset_transf = [data]
