@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 24 10:42:46 2023
-
-@author: Luana Ruiz
-"""
-
 import sys
 import os
 import datetime
@@ -44,7 +37,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 128, 'epochs': 150, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': 300, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args = objectview(args)
 
@@ -77,7 +70,7 @@ if not os.path.exists(saveDir):
     os.makedirs(saveDir)
 
 for args2 in [
-        {'batch_size': 128, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args2 = objectview(args2)
 
@@ -86,7 +79,10 @@ for args2 in [
 loss = torch.nn.NLLLoss()
 
 # Data
-dataset = Planetoid(root='/tmp/pubmed', name='PubMed', split='full')
+if 'cora' in dataset_name:
+    dataset = Planetoid(root='/tmp/cora', name='Cora', split='full')
+else:
+    dataset = Planetoid(root='/tmp/citeseer', name='CiteSeer', split='full')
 F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
@@ -253,4 +249,3 @@ print()
 pkl.dump(time_dict, open(os.path.join(saveDir,'time_per_epoch.p'), "wb"))
 pkl.dump(test_acc_dict, open(os.path.join(saveDir,'test_accs_full.p'), "wb"))
 pkl.dump(best_accs, open(os.path.join(saveDir,'best_accs.p'), "wb"))
-
