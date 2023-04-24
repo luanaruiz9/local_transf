@@ -91,7 +91,7 @@ F0 = dataset.num_node_features
 C = dataset.num_classes
 data = dataset.data 
 m = data.num_nodes
-data = data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+data = data.subgraph(torch.randperm(data.num_nodes)[0:m])
 nVal = torch.sum(dataset[0]['val_mask']).item()
 edge_list = data.edge_index
 
