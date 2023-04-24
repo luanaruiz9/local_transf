@@ -131,7 +131,7 @@ dataset_transf = [data]
 nTest = torch.sum(dataset_transf[0]['test_mask']).item()
 another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(F)-1), 
                                      batch_size=nTest, input_nodes = dataset_transf[0]['test_mask'], shuffle=False)
-
+m = n0
 for i in range(n_increases+1):
     #epoch = i*n_epochs_per_n
     #if epoch <= limit_epoch:
