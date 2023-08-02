@@ -91,7 +91,8 @@ loss = torch.nn.NLLLoss()
 dataset = PygNodePropPredDataset(name='ogbn-mag')
 rel_data = dataset[0]
 print(rel_data)
-print(rel_data.edge_index)
+print(rel_data.edge_index_dict.keys())
+print(rel_data.edge_index_dict[('paper', 'cites', 'paper')])
 
 split_idx = dataset.get_idx_split()
 print(split_idx)
