@@ -163,7 +163,7 @@ for i in range(n_increases+1):
     loader = NeighborLoader(sampledData, num_neighbors=[32]*(len(F)-1), 
                             batch_size=args.batch_size, input_nodes = sampledData['train_mask'], shuffle=False)
     val_loader = NeighborLoader(sampledData, num_neighbors=[32]*(len(F)-1), 
-                                batch_size=32, input_nodes = sampledData['val_mask'], shuffle=False)
+                                batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
     another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[32]*(len(F)-1), 
                                 batch_size=args.batch_size, input_nodes = dataset_transf[0]['train_mask'], shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[32]*(len(F)-1), 
