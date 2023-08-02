@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import pickle as pkl
 
-from ogb.nodeproppred import PygNodePropPredDataset
+from ogb.nodeproppred import PygNodePropPredDataset, Evaluator
 from torch_geometric.loader import NeighborLoader
 from torch_geometric.data import Data
 import torch_geometric.transforms as T
@@ -196,6 +196,8 @@ best_accs = dict()
 fig1, fig_last = plt.subplots(figsize=(1.4*figSize, 1*figSize))
 fig2, fig_best = plt.subplots(figsize=(1.4*figSize, 1*figSize))
 
+evaluator = Evaluator(name='ogbn-mag')
+
 # Training and testing
 
 for model_key, model in modelList.items():
@@ -208,7 +210,7 @@ for model_key, model in modelList.items():
         #loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
         best_acc_old = best_acc
         best_model_old = best_model
-        test_accs, losses, best_model, last_model, best_acc, test_loader, training_time = train_test.train(loader, val_loader, model, loss, args2) 
+        test_accs, losses, best_model, last_model, best_acc, test_loader, training_time = train_test.train(loader, val_loader, model, loss, args2, evaluator=evaluator) 
         if count == 0:
             test_accs_full = test_accs
             total_time = training_time
@@ -226,14 +228,14 @@ for model_key, model in modelList.items():
     test_acc_dict[model_key] = test_accs_full
     best_accs[model_key] = best_acc
     # Run test for our best model to save the predictions!
-    print(train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True))
+    print(train_test.test(test_loader, best_model, is_validation=False, save_model_preds=True, evaluator=evaluator))
     # Run test for our last model to save the predictions!
-    print(train_test.test(test_loader, last_model, is_validation=False, save_model_preds=True))
+    print(train_test.test(test_loader, last_model, is_validation=False, save_model_preds=True, evaluator=evaluator))
 
     # Run test for our best model to save the predictions!
-    print(train_test.test(another_test_loader, best_model, is_validation=False, save_model_preds=True))
+    print(train_test.test(another_test_loader, best_model, is_validation=False, save_model_preds=True, evaluator=evaluator))
     # Run test for our last model to save the predictions!
-    print(train_test.test(another_test_loader, last_model, is_validation=False, save_model_preds=True))
+    print(train_test.test(another_test_loader, last_model, is_validation=False, save_model_preds=True, evaluator=evaluator))
 
     print()
 

@@ -26,7 +26,7 @@ def build_optimizer(args, params):
     return scheduler, optimizer
 
 
-def train(loader, test_loader, model, loss_function, args):
+def train(loader, test_loader, model, loss_function, args, evaluator=None):
 
     scheduler, opt = build_optimizer(args, model.parameters())
 
@@ -56,7 +56,7 @@ def train(loader, test_loader, model, loss_function, args):
         losses.append(total_loss)
 
         if epoch % 10 == 0:
-          test_acc = test(test_loader, model, is_validation=True)
+          test_acc = test(test_loader, model, is_validation=True, evaluator=evaluator)
           test_accs.append(test_acc)
           if test_acc > best_acc:
             best_acc = test_acc
@@ -68,41 +68,59 @@ def train(loader, test_loader, model, loss_function, args):
     training_time = end-start
     return test_accs, losses, best_model, final_model, best_acc, test_loader, training_time
 
-def test(loader, test_model, is_validation=False, save_model_preds=False):
+def test(loader, test_model, is_validation=False, save_model_preds=False, evaluator=None):
     test_model.eval()
-
-    correct = 0
-    # Note that Cora is only one graph!
-    if save_model_preds:
-      print ("Saving Model Predictions for Model Type", test_model.type)
     
-    for data in loader:
-        
-        with torch.no_grad():
-            # max(dim=1) returns values, indices tuple; only need indices
-            pred = test_model(data).max(dim=1)[1]
-            label = data.y
-
-        mask = data.val_mask if is_validation else data.test_mask
-        # node classification: only evaluate on nodes in test set
-        pred = pred[mask]
-        label = label[mask]
-
+    if evaluator is None:
+        correct = 0
+        # Note that Cora is only one graph!
         if save_model_preds:
-
-          data_save = {}
-          data_save['pred'] = pred.view(-1).cpu().detach().numpy()
-          data_save['label'] = label.view(-1).cpu().detach().numpy()
-
-          #df = pd.DataFrame(data=data_save)
-          # Save locally as csv
-          #to_print = str(data.num_nodes)
-          #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
+          print ("Saving Model Predictions for Model Type", test_model.type)
+        
+        for data in loader:
             
-        correct += pred.eq(label).sum().item()
-
-    total = 0
-    for data in loader:
-        total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
-
-    return correct / total
+            with torch.no_grad():
+                # max(dim=1) returns values, indices tuple; only need indices
+                pred = test_model(data).max(dim=1)[1]
+                label = data.y
+    
+            mask = data.val_mask if is_validation else data.test_mask
+            # node classification: only evaluate on nodes in test set
+            pred = pred[mask]
+            label = label[mask]
+    
+            if save_model_preds:
+    
+              data_save = {}
+              data_save['pred'] = pred.view(-1).cpu().detach().numpy()
+              data_save['label'] = label.view(-1).cpu().detach().numpy()
+    
+              #df = pd.DataFrame(data=data_save)
+              # Save locally as csv
+              #to_print = str(data.num_nodes)
+              #df.to_csv('PubMed-Node-' + test_model.type + to_print + '.csv', sep=',', index=False)
+                
+            correct += pred.eq(label).sum().item()
+    
+        total = 0
+        for data in loader:
+            total += torch.sum(data.val_mask if is_validation else data.test_mask).item()
+        return correct / total
+    
+    else:
+        data = loader.dataset[0]
+        out = test_model(data.x, data.adj_t)
+        y_pred = out.argmax(dim=-1, keepdim=True)
+    
+        if is_validation:
+            acc = evaluator.eval({
+                'y_true': data.y['val_mask'],
+                'y_pred': y_pred['val_mask'],
+            })['acc']
+        else:
+            acc = evaluator.eval({
+                'y_true': data.y['test_mask'],
+                'y_pred': y_pred['test_mask'],
+            })['acc']
+    
+        return acc
