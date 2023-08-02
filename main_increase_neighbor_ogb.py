@@ -117,6 +117,7 @@ data = T.ToUndirected()(data)
 edge_list = data.edge_index
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
+data = data.to(device)
 
 # GNN models
 
