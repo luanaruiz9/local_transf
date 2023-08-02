@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import pickle as pkl
 
-from ogb.nodeproppred import PygNodePropPredDataset, Evaluator
+from ogb.nodeproppred import PygNodePropPredDataset
 from torch_geometric.loader import NeighborLoader
 from torch_geometric.data import Data
 import torch_geometric.transforms as T
