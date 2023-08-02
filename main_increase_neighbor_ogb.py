@@ -23,12 +23,6 @@ from aux_functions import return_node_idx
 ""
 ""
 
-# Check devices
-#if torch.cuda.is_available():
-#    device = 'cuda:0'
-#else:
-device = 'cpu'
-
 #limit_epoch = 0
 
 # total arguments
@@ -93,9 +87,9 @@ rel_data = dataset[0]
 
 split_idx = dataset.get_idx_split()
 
-train_idx = split_idx['train']['paper'].to(device)
-val_idx = split_idx['valid']['paper'].to(device)
-test_idx = split_idx['test']['paper'].to(device)
+train_idx = split_idx['train']['paper']
+val_idx = split_idx['valid']['paper']
+test_idx = split_idx['test']['paper']
 
 nTrain = torch.sum(train_idx).item()
 nVal = torch.sum(val_idx).item()
@@ -117,7 +111,6 @@ data = T.ToUndirected()(data)
 edge_list = data.edge_index
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
-data = data.to(device)
 
 # GNN models
 
@@ -131,19 +124,15 @@ GNN = gnn.GNN('gnn', F, MLP, True, K)
 #modelList['GNN'] = GNN
 
 SAGE = gnn.GNN('sage', F, MLP, True)
-SAGE = SAGE.to(device)
 modelList['SAGE'] = SAGE
 
 GCN = gnn.GNN('gcn', F, MLP, True)
-GCN = GCN.to(device)
 modelList['GCN'] = GCN
 
 SAGELarge = gnn.GNN('sage', F, MLP, True)
-SAGELarge = SAGELarge.to(device)
 modelList['SAGE full'] = SAGELarge
 
 GCNLarge = gnn.GNN('gcn', F, MLP, True)
-GCNLarge = GCNLarge.to(device)
 modelList['GCN full'] = GCNLarge
 
 GNNLarge = gnn.GNN('gnn', F, MLP, True, K)
@@ -166,7 +155,7 @@ for i in range(n_increases+1):
     #    m = n0 + increase_rate*i
     print(i)
     idx = return_node_idx(edge_list,m)
-    sampledData = data.subgraph(torch.tensor(idx).to(device))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+    sampledData = data.subgraph(torch.tensor(idx))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
     dataset_vector.append(dataset)
