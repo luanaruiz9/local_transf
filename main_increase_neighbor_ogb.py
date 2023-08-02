@@ -60,7 +60,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 300, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
+        {'batch_size': 32, 'epochs': 50, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.0001},
     ]:
         args = objectview(args)
 
@@ -159,10 +159,12 @@ dataset_transf = [data]
 another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(F)-1), 
                                      batch_size=nTest, input_nodes = data['test_mask'], shuffle=False)
 m = n0
+print(n_increases)
 for i in range(n_increases+1):
     #epoch = i*n_epochs_per_n
     #if epoch <= limit_epoch:
     #    m = n0 + increase_rate*i
+    print(i)
     idx = return_node_idx(edge_list,m)
     sampledData = data.subgraph(torch.tensor(idx).to(device))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph

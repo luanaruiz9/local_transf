@@ -27,8 +27,6 @@ def return_node_idx(edge_list, m):
                 for j in idx:
                     if j in aux_list:
                         aux_list.remove(j)
-            print(idx)
-            print(aux_list)
             i = np.random.choice(np.array(aux_list))
             idx += [i]
         cur_edge_list = edge_list[1,torch.argwhere(edge_list[0]==i)]
