@@ -24,10 +24,10 @@ from aux_functions import return_node_idx
 ""
 
 # Check devices
-if torch.cuda.is_available():
-    device = 'cuda:0'
-else:
-    device = 'cpu'
+#if torch.cuda.is_available():
+#    device = 'cuda:0'
+#else:
+device = 'cpu'
 
 #limit_epoch = 0
 
