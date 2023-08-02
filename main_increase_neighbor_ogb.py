@@ -90,12 +90,8 @@ loss = torch.nn.NLLLoss()
 
 dataset = PygNodePropPredDataset(name='ogbn-mag')
 rel_data = dataset[0]
-print(rel_data)
-print(rel_data.edge_index_dict.keys())
-print(rel_data.edge_index_dict[('paper', 'cites', 'paper')])
 
 split_idx = dataset.get_idx_split()
-print(split_idx)
 
 train_idx = split_idx['train']['paper'].to(device)
 val_idx = split_idx['valid']['paper'].to(device)
@@ -121,8 +117,6 @@ data = T.ToUndirected()(data)
 edge_list = data.edge_index
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
-
-print(edge_list)
 
 # GNN models
 
@@ -169,7 +163,7 @@ for i in range(n_increases+1):
     #if epoch <= limit_epoch:
     #    m = n0 + increase_rate*i
     idx = return_node_idx(edge_list,m)
-    sampledData = data.subgraph(torch.tensor(idx))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
+    sampledData = data.subgraph(torch.tensor(idx).to(device))#data.subgraph(torch.randint(0, data.num_nodes, (m,)))
     # fix here; val has to be on large graph
     dataset = [sampledData]
     dataset_vector.append(dataset)
