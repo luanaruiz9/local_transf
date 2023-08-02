@@ -122,8 +122,6 @@ edge_list = data.edge_index
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
 
-data = T.ToSparseTensor()(data)
-
 print(edge_list)
 
 # GNN models
