@@ -116,13 +116,14 @@ data = Data(
     val_mask=index_to_mask(val_idx,size=m),
     test_mask=index_to_mask(test_idx,size=m))
 
-data = T.ToSparseTensor()(data)
 data = T.ToUndirected()(data)
 
+edge_list = data.edge_index
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
 
-edge_list = data.edge_index
+data = T.ToSparseTensor()(data)
+
 print(edge_list)
 
 # GNN models
