@@ -102,7 +102,7 @@ nTrain = torch.sum(train_idx).item()
 nVal = torch.sum(val_idx).item()
 nTest = torch.sum(test_idx).item()
 
-m = rel_data.num_nodes
+m = rel_data.x_dict['paper'].shape[0]
 
 # We are only interested in paper <-> paper relations.
 data = Data(
@@ -118,7 +118,6 @@ data = T.ToUndirected()(data)
 
 F0 = rel_data.x_dict['paper'].shape[1]
 C = dataset.num_classes
-m = data.num_nodes
 
 edge_list = data.edge_index
 print(edge_list)
