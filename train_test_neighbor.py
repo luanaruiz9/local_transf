@@ -119,7 +119,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, evalua
             })['acc']
         else:
             acc = evaluator.eval({
-                'y_true': data.y[data.test_mask.squeeze()'],
+                'y_true': data.y[data.test_mask.squeeze()],
                 'y_pred': y_pred[data.test_mask.squeeze()],
             })['acc']
     
