@@ -121,6 +121,7 @@ C = dataset.num_classes
 m = data.num_nodes
 
 edge_list = data.edge_index
+print(edge_list)
 
 # GNN models
 
