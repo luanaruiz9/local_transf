@@ -73,6 +73,9 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
 
     correct = 0
     # Note that Cora is only one graph!
+    if save_model_preds:
+      print ("Saving Model Predictions for Model Type", test_model.type)
+    
     for data in loader:
         
         with torch.no_grad():
@@ -86,7 +89,6 @@ def test(loader, test_model, is_validation=False, save_model_preds=False):
         label = label[mask]
 
         if save_model_preds:
-          print ("Saving Model Predictions for Model Type", test_model.type)
 
           data_save = {}
           data_save['pred'] = pred.view(-1).cpu().detach().numpy()
