@@ -44,7 +44,7 @@ def train(loader, test_loader, model, loss_function, args):
             pred = model(batch)
             label = batch.y
             pred = pred[batch.train_mask]
-            label = label[batch.train_mask]
+            label = label[batch.train_mask].squeeze()
             print(pred)
             print(label)
             loss = loss_function(pred, label)
