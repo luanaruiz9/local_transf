@@ -108,7 +108,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, evalua
         return correct / total
     
     else:
-        data = loader.dataset[0]
+        data = loader.data
         out = test_model(data.x, data.adj_t)
         y_pred = out.argmax(dim=-1, keepdim=True)
     
