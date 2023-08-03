@@ -26,8 +26,8 @@ from aux_functions import return_node_idx
 #limit_epoch = 0
 
 # total arguments
-n0 = 500#int(sys.argv[1])
-n_epochs_per_n = 10#int(sys.argv[2])
+n0 = 1000#int(sys.argv[1])
+n_epochs_per_n = 5#int(sys.argv[2])
 
 figSize = 5
 plt.rcParams.update({'font.size': 16})
@@ -107,7 +107,7 @@ data = Data(
     test_mask=index_to_mask(test_idx,size=m))
 
 data = T.ToUndirected()(data)
-data = data.subgraph(torch.randperm(m)[0:50000]) # Restricting to 50k 
+data = data.subgraph(torch.randperm(m)[0:100000]) # Restricting to 50k 
                                                 # nodes due to memory limitations
 
 edge_list = data.edge_index
