@@ -54,7 +54,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 32, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -118,8 +118,8 @@ C = dataset.num_classes
 
 modelList = dict()
 
-F = [F0, 256, 256]
-MLP = [256, C]
+F = [F0, 256, 128]
+MLP = [128, C]
 K = [2, 2]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
