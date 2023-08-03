@@ -107,7 +107,7 @@ data = Data(
     test_mask=index_to_mask(test_idx,size=m))
 
 data = T.ToUndirected()(data)
-data = data.subgraph(torch.random.permutation(m)[0:50000]) # Restricting to 50k 
+data = data.subgraph(torch.randperm(m)[0:50000]) # Restricting to 50k 
                                                 # nodes due to memory limitations
 
 edge_list = data.edge_index
