@@ -162,13 +162,13 @@ for i in range(n_increases+1):
     dataset = [sampledData]
     dataset_vector.append(dataset)
     
-    loader = NeighborLoader(sampledData, num_neighbors=[32]*(len(F)-1), 
+    loader = NeighborLoader(sampledData, num_neighbors=[16]*(len(F)-1), 
                             batch_size=args.batch_size, input_nodes = sampledData['train_mask'], shuffle=False)
-    val_loader = NeighborLoader(sampledData, num_neighbors=[32]*(len(F)-1), 
+    val_loader = NeighborLoader(sampledData, num_neighbors=[16]*(len(F)-1), 
                                 batch_size=nVal, input_nodes = sampledData['val_mask'], shuffle=False)
-    another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[32]*(len(F)-1), 
+    another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[16]*(len(F)-1), 
                                 batch_size=args.batch_size, input_nodes = dataset_transf[0]['train_mask'], shuffle=False)
-    another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[32]*(len(F)-1), 
+    another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[16]*(len(F)-1), 
                                 batch_size=32, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
     loader_vector.append(loader)
