@@ -26,7 +26,7 @@ from aux_functions import return_node_idx
 #limit_epoch = 0
 
 # total arguments
-n0 = 1000#int(sys.argv[1])
+n0 = 5000#int(sys.argv[1])
 n_epochs_per_n = 5#int(sys.argv[2])
 
 figSize = 5
@@ -54,7 +54,7 @@ class objectview(object):
         self.__dict__ = d
         
 for args in [
-        {'batch_size': 32, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
+        {'batch_size': 128, 'epochs': 100, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.001},
     ]:
         args = objectview(args)
 
@@ -72,7 +72,7 @@ n_increases = int(n_epochs/n_epochs_per_n)
 #increase_rate = 20
 
 for args2 in [
-        {'batch_size': 32, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
+        {'batch_size': 128, 'epochs': n_epochs_per_n, 'opt': 'adam', 'opt_scheduler': 'none', 'opt_restart': 0, 'weight_decay': 5e-3, 'lr': 0.01},
     ]:
         args2 = objectview(args2)
 
@@ -107,7 +107,7 @@ data = Data(
     test_mask=index_to_mask(test_idx,size=m))
 
 data = T.ToUndirected()(data)
-data = data.subgraph(torch.randperm(m)[0:100000]) # Restricting to 50k 
+data = data.subgraph(torch.randperm(m)[0:500000]) # Restricting to 500k 
                                                 # nodes due to memory limitations
 
 edge_list = data.edge_index
@@ -148,7 +148,7 @@ color['GNN'] = 'dodgerblue'
 # Trasferability    
 dataset_transf = [data]
 another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(F)-1), 
-                                     batch_size=32, input_nodes = data['test_mask'], shuffle=False)
+                                     batch_size=128, input_nodes = data['test_mask'], shuffle=False)
 m = n0
 print(n_increases)
 for i in range(n_increases+1):
@@ -169,7 +169,7 @@ for i in range(n_increases+1):
     another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[16]*(len(F)-1), 
                                 batch_size=args.batch_size, input_nodes = dataset_transf[0]['train_mask'], shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[16]*(len(F)-1), 
-                                batch_size=32, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
+                                batch_size=128, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
     loader_vector.append(loader)
     val_loader_vector.append(val_loader)
