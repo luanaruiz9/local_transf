@@ -26,7 +26,7 @@ from aux_functions import return_node_idx
 #limit_epoch = 0
 
 # total arguments
-n0 = 10000#int(sys.argv[1])
+n0 = 5000#int(sys.argv[1])
 n_epochs_per_n = 10#int(sys.argv[2])
 
 figSize = 5
