@@ -55,7 +55,7 @@ def train(loader, test_loader, model, loss_function, args, evaluator=None):
         total_loss /= len(loader.dataset)
         losses.append(total_loss)
 
-        if epoch % 5 == 0:
+        if epoch % 10 == 0:
           test_acc = test(test_loader, model, is_validation=True, evaluator=evaluator)
           test_accs.append(test_acc)
           if test_acc > best_acc:
@@ -108,7 +108,7 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, evalua
         return correct / total
     
     else:
-        data = loader.data
+        data = loader.dataset[0]
         out = test_model(data)
         y_pred = out.argmax(dim=-1, keepdim=True)
     
