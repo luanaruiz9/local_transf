@@ -148,7 +148,7 @@ color['GNN'] = 'dodgerblue'
 # Trasferability    
 dataset_transf = [data]
 another_test_loader = NeighborLoader(dataset_transf[0], num_neighbors=[-1]*(len(F)-1), 
-                                     batch_size=128, input_nodes = data['test_mask'], shuffle=False)
+                                     batch_size=nTest, input_nodes = data['test_mask'], shuffle=False)
 m = n0
 print(n_increases)
 for i in range(n_increases+1):
@@ -169,7 +169,7 @@ for i in range(n_increases+1):
     another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[25]*(len(F)-1), 
                                 batch_size=args.batch_size, input_nodes = dataset_transf[0]['train_mask'], shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[25]*(len(F)-1), 
-                                batch_size=128, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
+                                batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
     loader_vector.append(loader)
     val_loader_vector.append(val_loader)
