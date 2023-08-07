@@ -108,19 +108,19 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, evalua
         return correct / total
     
     else:
-        for data in loader:
-            out = test_model(data)
-            y_pred = out.argmax(dim=-1, keepdim=True)
-        
-            if is_validation:
-                acc = evaluator.eval({
-                    'y_true': data.y[data.val_mask.squeeze()],
-                    'y_pred': y_pred[data.val_mask.squeeze()],
-                })['acc']
-            else:
-                acc = evaluator.eval({
-                    'y_true': data.y[data.test_mask.squeeze()],
-                    'y_pred': y_pred[data.test_mask.squeeze()],
-                })['acc']
+        data = loader.data
+        out = test_model(data)
+        y_pred = out.argmax(dim=-1, keepdim=True)
+    
+        if is_validation:
+            acc = evaluator.eval({
+                'y_true': data.y[data.val_mask.squeeze()],
+                'y_pred': y_pred[data.val_mask.squeeze()],
+            })['acc']
+        else:
+            acc = evaluator.eval({
+                'y_true': data.y[data.test_mask.squeeze()],
+                'y_pred': y_pred[data.test_mask.squeeze()],
+            })['acc']
     
         return acc
