@@ -118,8 +118,8 @@ C = dataset.num_classes
 
 modelList = dict()
 
-F = [F0, 64, 64]
-MLP = [64, C]
+F = [F0, 256, 256]
+MLP = [256, C]
 K = [2, 2]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
