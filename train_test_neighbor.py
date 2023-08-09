@@ -110,7 +110,6 @@ def test(loader, test_model, is_validation=False, save_model_preds=False, evalua
     else:
         data = loader.data
         print(loader)
-        print(loader.batch)
         print(data)
         out = test_model(data)
         y_pred = out.argmax(dim=-1, keepdim=True)
