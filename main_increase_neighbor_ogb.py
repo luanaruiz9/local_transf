@@ -26,7 +26,7 @@ from aux_functions import return_node_idx
 #limit_epoch = 0
 
 # total arguments
-n0 = 100#int(sys.argv[1])
+n0 = 5000#int(sys.argv[1])
 n_epochs_per_n = 10#int(sys.argv[2])
 
 figSize = 5
@@ -107,7 +107,7 @@ data = Data(
     test_mask=index_to_mask(test_idx,size=m))
 
 data = T.ToUndirected()(data)
-data = data.subgraph(torch.randperm(m)[0:20000]) # Restricting to 200k 
+data = data.subgraph(torch.randperm(m)[0:200000]) # Restricting to 200k 
                                                 # nodes due to memory limitations
 
 edge_list = data.edge_index
@@ -118,8 +118,8 @@ C = dataset.num_classes
 
 modelList = dict()
 
-F = [F0, 256, 256]
-MLP = [256, C]
+F = [F0, 64, 64]
+MLP = [64, C]
 K = [2, 2]
 
 GNN = gnn.GNN('gnn', F, MLP, True, K)
@@ -169,7 +169,7 @@ for i in range(n_increases+1):
     another_loader = NeighborLoader(dataset_transf[0], num_neighbors=[25]*(len(F)-1), 
                                 batch_size=args.batch_size, input_nodes = dataset_transf[0]['train_mask'], shuffle=False)
     another_val_loader = NeighborLoader(dataset_transf[0], num_neighbors=[25]*(len(F)-1), 
-                                batch_size=nVal, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
+                                batch_size=128, input_nodes = dataset_transf[0]['val_mask'], shuffle=False)
     
     loader_vector.append(loader)
     val_loader_vector.append(val_loader)
